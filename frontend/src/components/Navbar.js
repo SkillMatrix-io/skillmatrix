@@ -31,7 +31,7 @@ export default function Navbar() {
             <input class="form-control m-2" type="search" placeholder="Search" aria-label="Search" />
             <button class="btn btn-outline-success m-2" type="submit">Search</button>
           </form>
-          <Link className="nav-link" to={'/register'}><button className="btn btn-primary ms-2 fs-5 m-2">Register</button></Link>
+          <Link className="nav-link" to={'/auth/register'}><button className="btn btn-primary ms-2 fs-5 m-2">Register</button></Link>
           <button className="nav-link btn btn-primary m-2" onClick={toggleTheme}>{theme === 'dark' ? <Sun /> : <Moon />}</button>
         </div>
       </div>

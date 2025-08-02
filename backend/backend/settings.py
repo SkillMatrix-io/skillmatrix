@@ -40,7 +40,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user',
+    'courses',
+    'rest_framework', #rest requests
+    'corsheaders' #allowing origins
 ]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [config("CRA_PORT")]
+CSRF_ALLOWED_ORIGINS = [config("CRA_PORT")] 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'rest_framework_simpljwt.authentication.JWTAuthentication',
+    )
+}
+
+AUTH_USER_MODEL = 'user.User'
+# default user model for authenticate in login creds
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -76,11 +91,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    # 
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
+}
     # dont remove ->
     # Database using all the variables from .env HAHA security
     # 'default': {
@@ -91,7 +106,7 @@ DATABASES = {
     #     'HOST': config("DB_HOST"),
     #     'PORT': '5432',  # default for postgres
     # }
-}
+# }
 
 # CACHES = {
 #     'default':{
