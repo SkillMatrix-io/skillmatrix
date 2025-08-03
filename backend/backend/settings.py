@@ -81,11 +81,17 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='3306'),
+        # 'NAME': config('DB_NAME'),
+        # 'USER': config('DB_USER'),
+        # 'PASSWORD': config('DB_PASSWORD'),
+        # 'HOST': config('DB_HOST', default='localhost'),
+        # 'PORT': config('DB_PORT', default='3306'),
+        'HOST':'bnafgojyue9zejdwdmxj-mysql.services.clever-cloud.com',
+        'NAME':'bnafgojyue9zejdwdmxj',
+        'USER':'ur5ijyq3bkrpvaup',
+        'PORT':'3306',
+        'PASSWORD':'Xx759LPJYbB9kRwqNlhn',
+        'URI':'mysql://ur5ijyq3bkrpvaup:Xx759LPJYbB9kRwqNlhn@bnafgojyue9zejdwdmxj-mysql.services.clever-cloud.com:3306/bnafgojyue9zejdwdmxj',
     },
     # dont remove ->
     # Database using all the variables from .env HAHA security
