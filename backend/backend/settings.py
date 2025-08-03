@@ -43,8 +43,6 @@ INSTALLED_APPS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [config("CRA_PORT")]
-CSRF_ALLOWED_ORIGINS = [config("CRA_PORT")] 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':(
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -68,9 +66,10 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com"
-
 ]
-
+CSRF_ALLOWED_ORIGINS = [
+    "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com"
+]
 ALLOWED_HOSTS = ['skillmatrix-rlxj.onrender.com','localhost', '127.0.0.1']
 CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOW_ALL_ORIGINS = True
