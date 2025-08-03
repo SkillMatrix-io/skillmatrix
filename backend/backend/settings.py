@@ -28,8 +28,6 @@ SECRET_KEY = 'django-insecure-i+rwtebf%ms4ik!$0w$*qphjcc!fa_f1e3e%j=wrgg!%)n7rfr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -53,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'skillmatrix-rlxj.onrender.com']
 
 ROOT_URLCONF = 'backend.urls'
 
