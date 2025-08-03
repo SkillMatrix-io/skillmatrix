@@ -20,22 +20,16 @@ def login_view(request):
         # look up AUTH_USER_MODEL which is user/models.py -> User
         if not user:
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
         if user.role != role:
             return Response({'message': 'User role mismatch'}, status=status.HTTP_403_FORBIDDEN)
-
         refresh = RefreshToken.for_user(user)
-
         response = Response({
             'message': 'Login successful',
             'role': user.role
         }, status=status.HTTP_200_OK)
-
-        response.set_cookie('access', str(refresh.access_token), httponly=True)
+        response.set_cookie('access', str(refresh.access_token), httponly=True, secure=True, samesite='Lax')
         response.set_cookie('refresh', str(refresh), httponly=True)
-
         return response
-
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

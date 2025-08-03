@@ -12,6 +12,10 @@ mysqlclient==2.2.7
 PyJWT==2.10.1
 python-decouple==3.8
 redis==6.2.0
+rest-framework-simplejwt==0.0.2
 sqlparse==0.5.3
 typing_extensions==4.14.1
 tzdata==2025.2
+# incase these dependencies are not recognised even after installing them.
+# get out of virtual environment (env) and install in backend/ folder again
+# just for safety install in skill matrix folder as well

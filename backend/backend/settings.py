@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config # for .env 
+# incase any library is not getting imported even after running requiements.txt
+# read _requirements.txt file 
 SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG",default=False,cast=bool)
 
@@ -50,7 +52,7 @@ CORS_ALLOWED_ORIGINS = [config("CRA_PORT")]
 CSRF_ALLOWED_ORIGINS = [config("CRA_PORT")] 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':(
-        'rest_framework_simpljwt.authentication.JWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
@@ -91,10 +93,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
+    'default':{
+        'ENGINE':'django.db.backends.mysql',
+        'NAME':config('DB_NAME'),
+        'USER':config('DB_USER'),
+        'PASSWORD':config('DB_PASSWORD'),
+        'HOST':config('DB_HOST'),
+        'POST': config('DB_PORT'),
+    }
 }
     # dont remove ->
     # Database using all the variables from .env HAHA security
