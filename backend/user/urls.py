@@ -1,11 +1,7 @@
-from django.contrib import admin
 from django.urls import path
-from . import views
+from .views import login_view, register_view
 
 urlpatterns = [
-    path('',views.registerPageView,name='registerPage'),
-    path('register/', views.registerPageView, name='registerPage'),
-    path('login/', views.loginView, name='loginPage'),
-    path('logout/', views.logOutView, name='logOutPage'),
-    path('dashboard/', views.dashboardView, name='dashboardPage'),
+    path("auth/login/", login_view, name="login"),
+    path("auth/register/", register_view, name="register"),
 ]
