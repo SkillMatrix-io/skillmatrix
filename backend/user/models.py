@@ -8,7 +8,6 @@ class User(AbstractUser):
         ('student', 'Student'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    email_verified = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return self.username
