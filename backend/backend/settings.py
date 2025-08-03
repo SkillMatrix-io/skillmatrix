@@ -71,7 +71,7 @@ CORS_ALLOWED_ORIGINS = [
 
 ]
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'skillmatrix-rlxj.onrender.com']
+ALLOWED_HOSTS = ['skillmatrix-rlxj.onrender.com','localhost', '127.0.0.1']
 CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'backend.urls'
