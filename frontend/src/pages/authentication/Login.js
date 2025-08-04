@@ -1,6 +1,8 @@
 import { useState } from "react"
 import axios from 'axios'
 import './Login.css'
+import { useNavigate } from 'react-router-dom'
+import { useSession } from "../../context/SessionContext"
 
 export default function Login() {
     const [userRole, setUserRole] = useState('student')
@@ -37,6 +39,8 @@ export function UserLogin({ role }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const { setUser } = useSession()
+    const navigate = useNavigate()
 
     const submit = async (e) => {
         e.preventDefault(); // prevent form reload
@@ -48,7 +52,12 @@ export function UserLogin({ role }) {
             }, { withCredentials: true });
             // By default, browsers block sending cookies in cross-origin requests for security reasons.
             // so withCredential: false, will send no cookies, will save no cookies
-            console.log(response.data); // could be token, user data, etc.
+            console.log(response.data);
+            // could be token, user data, etc.
+            if (response.data?.role === 'student') {
+                setUser(response.data);
+                navigate('/dashboard/student')
+            }
             // Redirect to dashboard or save token
             // If you want to store session info or use HttpOnly cookies for JWT, you must enable withCredentials.
 

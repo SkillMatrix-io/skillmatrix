@@ -27,6 +27,7 @@ def register_view(request):
         response = Response({
             'message':'Registration successful',
             'role':user.role,
+            'username': user.username
         }, status=status.HTTP_201_CREATED)
         
         response.set_cookie('access',str(refresh.access_token), httponly=True, samesite='Lax',max_age=60*60*24) #important - storing login token in http only cookies - not on local machine
@@ -57,7 +58,8 @@ def login_view(request):
         refresh = RefreshToken.for_user(user)
         response = Response({
             'message': 'Login successful',
-            'role': user.role
+            'role': user.role,
+            'username': user.username
         }, status=status.HTTP_200_OK)
 
         response.set_cookie('access', 
