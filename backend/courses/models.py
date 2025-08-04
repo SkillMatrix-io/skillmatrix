@@ -1,5 +1,5 @@
 from django.db import models
-from user.models import User
+from user.models import User  # Adjust if your user app name is different
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
@@ -24,9 +24,15 @@ class Course(models.Model):
         return self.title
 
 class Lesson(models.Model):
+    CONTENT_TYPE_CHOICES = [
+        ('video', 'Video'),
+        ('pdf', 'PDF'),
+        ('text', 'Text'),
+    ]
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
     title = models.CharField(max_length=255)
-    content_type = models.CharField(max_length=20, choices=[('video', 'Video'), ('pdf', 'PDF'), ('text', 'Text')])
+    content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES)
     content_file = models.FileField(upload_to='lessons/', null=True, blank=True)
     video_url = models.URLField(blank=True, null=True)
     order = models.PositiveIntegerField()
