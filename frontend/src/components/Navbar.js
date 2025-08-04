@@ -1,19 +1,20 @@
 import { Link, useNavigate } from "react-router-dom"
 import { useTheme } from "../context/ThemeProvider"
+import { useSession } from "../context/SessionContext"
 import { Moon, Sun } from "lucide-react"
 import axios from "axios"
 import './Navbar.css'
 
 export default function Navbar() {
+  const { user, setUser } = useSession()
+
   // logout function dont remove. or take it along with the logout button 
   const navigate = useNavigate()
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8000/api/auth/logout/", { withCredentials: true })
-      localStorage.removeItem('username');
-      localStorage.removeItem('role');
-      localStorage.clear()
-
+      await axios.post("http://localhost:8000/api/auth/logout/", null, { withCredentials: true })
+      // localStorage.clear()
+      setUser(null)
       navigate('/')
     } catch (e) {
       console.log('Error logging out ' + e.response?.data?.message || e.message)
@@ -35,24 +36,28 @@ export default function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto ms-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <Link className="nav-link fs-5" to={'/dashboard'}>Dashboard</Link>
-            </li>
+
+            {user &&
+              <li className="nav-item">
+                <Link className="nav-link fs-5" to={'/dashboard'}>Dashboard</Link>
+              </li>
+            }
             <li className="nav-item">
               <Link className="nav-link fs-5" to={'/courses'}>Courses</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link fs-5" to={'/auth/login'}>Login</Link>
-            </li>
+            {!user &&
+              <li className="nav-item">
+                <Link className="nav-link fs-5" to={'/auth/login'}>Login</Link>
+              </li>}
           </ul>
           <form className="d-flex" role="search">
             <input className="form-control m-2" type="search" placeholder="Search" aria-label="Search" />
             <button className="btn btn-outline-success m-2" type="submit">Search</button>
           </form>
-          <Link className="nav-link" to={'/auth/register'}><button className="btn btn-primary ms-2 fs-5 m-2">Register</button></Link>
+          {!user && <Link className="nav-link" to={'/auth/register'}><button className="btn btn-primary ms-2 fs-5 m-2">Register</button></Link>}
           <button className="nav-link btn btn-primary m-2" onClick={toggleTheme}>{theme === 'dark' ? <Sun /> : <Moon />}</button>
           {/* logout button calling the logout function */}
-          <button onClick={handleLogout}>logout</button>
+          {user && <button onClick={handleLogout}>logout</button>}
         </div>
       </div>
     </nav>

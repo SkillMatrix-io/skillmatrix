@@ -1,10 +1,19 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import update_last_login
+
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import LoginSerializer, RegisterSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import LoginSerializer, RegisterSerializer, UserSerializer #we made these in serializer file
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, TokenError
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.contrib.auth import get_user_model
+import datetime
+
+User = get_user_model()
+
+# Import or define validate_access_token and Expired
+from rest_framework.exceptions import AuthenticationFailed
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -13,7 +22,7 @@ def register_view(request):
     if serializer.is_valid():
         user = serializer.save() #serializer handles creation
 
-    # auto-login
+        # auto-login
         refresh = RefreshToken.for_user(user)
         response = Response({
             'message':'Registration successful',
@@ -41,6 +50,10 @@ def login_view(request):
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         if user.role != role:
             return Response({'message': 'User role mismatch'}, status=status.HTTP_403_FORBIDDEN)
+        
+        # ✅ Update last login
+        update_last_login(None, user)
+
         refresh = RefreshToken.for_user(user)
         response = Response({
             'message': 'Login successful',
@@ -66,8 +79,67 @@ def login_view(request):
 #     return render(request, 'accounts/dashboard.html', {'username': request.user.username, 'role': request.user.role})
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def logout_view(request):
     response = Response({'message':'Logged out successfully'},status=status.HTTP_200_OK)
     response.delete_cookie('access')
     response.delete_cookie('refresh')
     return response
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_by_id(request, pk):
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+    
+    serializer = RegisterSerializer(user)  # or a different serializer for reading
+    return Response(serializer.data)
+
+
+# backend sendds two cookies - jwt token one is session - 24hrs ago 
+# other is refresh 30 days age 
+#  this method below ensures that if first is expire issue a new one 
+# if second is expired let the user login again
+# also sends over user-meta data like username, role, bio for consistency
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def session_view(request):
+    access_token = request.COOKIES.get('access')
+    refresh_token = request.COOKIES.get('refresh')
+
+    user = None
+
+    if access_token:
+        try:
+            access_obj = AccessToken(access_token)
+            user_id = access_obj['user_id']
+            user = User.objects.get(id=user_id)
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except TokenError:
+            pass
+        except User.DoesNotExist:
+            return Response({"detail": "Invalid user."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    # Try refresh token if access is invalid
+    if refresh_token:
+        try:
+            refresh_obj = RefreshToken(refresh_token)
+            user_id = refresh_obj['user_id']
+            user = User.objects.get(id=user_id)
+
+            new_access = refresh_obj.access_token
+            new_access.set_exp(lifetime=datetime.timedelta(hours=24))  # Optional: force your own expiry
+            # fetched user data - hehe
+            response = Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+            response.set_cookie('access', str(new_access), httponly=True, samesite='Lax', max_age=60*60*24)
+            return response
+
+        except TokenError:
+            return Response({"detail": "Refresh token expired"}, status=status.HTTP_401_UNAUTHORIZED)
+        except User.DoesNotExist:
+            return Response({"detail": "Invalid user."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    return Response({"detail": "Not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)

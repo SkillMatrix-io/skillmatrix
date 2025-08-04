@@ -7,27 +7,37 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Auth from './pages/authentication/Auth';
 
 import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoutes';
 
 import reportWebVitals from './reportWebVitals';
 import ThemeProvider from './context/ThemeProvider';
+import SessionProvider from './context/SessionContext';
+
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-
 // import 'bootstrap/dist/css/bootstrap.css';
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <BrowserRouter>
-      <Navbar />
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/auth/:mode" element={<Auth />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/auth/:mode" element={<Auth />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </SessionProvider>
   </React.StrictMode>
 );
 

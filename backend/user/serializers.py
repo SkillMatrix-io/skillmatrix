@@ -2,7 +2,6 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-
 from .models import User
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -20,7 +19,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            role=validated_data['role']
+            role=validated_data['role'],
+            bio=validated_data.get('bio', '')  # optional fallback
         )
         return user
     # create_user hashes the password 
@@ -30,3 +30,8 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(trim_whitespace=True)
     password = serializers.CharField()
     role = serializers.ChoiceField(choices=['student','teacher'])
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'role', 'bio', 'avatar_url')  # add 'avatar_url' or others if needed
