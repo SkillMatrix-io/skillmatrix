@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from decouple import config # for .env 
+# incase any library is not getting imported even after running requiements.txt
+# read _requirements.txt file 
 SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG",default=False,cast=bool)
 
@@ -23,14 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-i+rwtebf%ms4ik!$0w$*qphjcc!fa_f1e3e%j=wrgg!%)n7rfr'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -43,7 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user',
     'courses',
+    'rest_framework', #rest requests
+    'corsheaders' #allowing origins
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+AUTH_USER_MODEL = 'user.User'
+# default user model for authenticate in login creds
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,8 +61,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com"
+]
+CSRF_ALLOWED_ORIGINS = [
+    "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com"
+]
+ALLOWED_HOSTS = ['skillmatrix-rlxj.onrender.com','localhost', '127.0.0.1']
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
@@ -79,21 +98,25 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-
+    # change local to default to switch between local / cloud db lol
+    'local': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='3306'),
+    },
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': config('DB_NAME'),
-        # 'USER': config('DB_USER'),
-        # 'PASSWORD': config('DB_PASSWORD'),
-        # 'HOST': config('DB_HOST', default='localhost'),
-        # 'PORT': config('DB_PORT', default='3306'),
-        'HOST':'bnafgojyue9zejdwdmxj-mysql.services.clever-cloud.com',
-        'NAME':'bnafgojyue9zejdwdmxj',
-        'USER':'ur5ijyq3bkrpvaup',
-        'PORT':'3306',
-        'PASSWORD':'Xx759LPJYbB9kRwqNlhn',
-        'URI':'mysql://ur5ijyq3bkrpvaup:Xx759LPJYbB9kRwqNlhn@bnafgojyue9zejdwdmxj-mysql.services.clever-cloud.com:3306/bnafgojyue9zejdwdmxj',
+        'NAME': config('MYSQL_ADDON_DB'),
+        'USER': config('MYSQL_ADDON_USER'),
+        'PASSWORD': config('MYSQL_ADDON_PASSWORD'),
+        'HOST': config('MYSQL_ADDON_HOST'),
+        'PORT': config('MYSQL_ADDON_PORT', default='3306'),
     },
+}
+
     # dont remove ->
     # Database using all the variables from .env HAHA security
     # 'default': {
@@ -104,7 +127,6 @@ DATABASES = {
     #     'HOST': config("DB_HOST"),
     #     'PORT': '5432',  # default for postgres
     # }
-}
 
 # CACHES = {
 #     'default':{
@@ -157,8 +179,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'user.User'
-
 #-->  Dont Remove
 #  REST_FRAMEWORK = {
 #     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -168,5 +188,7 @@ AUTH_USER_MODEL = 'user.User'
 #         'rest_framework.permissions.IsAuthenticated',
 #     ],
 # }
+#}
+
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR, 'media')

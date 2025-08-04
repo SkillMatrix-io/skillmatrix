@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import Login from "./Login"
 import Register from "./Register"
 
-export default function Auth(){
+export default function Auth() {
     const mode = useParams()
     console.log(mode)
     return (
