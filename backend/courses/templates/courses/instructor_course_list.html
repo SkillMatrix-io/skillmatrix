@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}My Courses{% endblock %}
+{% block content %}
+<h2>My Courses</h2>
+<a href="{% url 'courses:instructor_course_create' %}" class="btn btn-success mb-3">Create New Course</a>
+{% if courses %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Published</th>
+            <th>Price</th>
+            <th>Created On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.title }}</td>
+            <td>{{ course.is_published|yesno:"Yes,No" }}</td>
+            <td>{% if course.price > 0 %}₹{{ course.price }}{% else %}Free{% endif %}</td>
+            <td>{{ course.created_at|date:"Y-m-d" }}</td>
+            <td>
+                <a href="{% url 'courses:instructor_course_update' course.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'courses:instructor_course_delete' course.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You have not created any courses yet.</p>
+{% endif %}
+{% endblock %}
