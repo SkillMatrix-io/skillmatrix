@@ -20,8 +20,10 @@ def register_view(request):
             'role':user.role,
         }, status=status.HTTP_201_CREATED)
         
-        response.set_cookie('access',str(refresh.access_token), httponly=True) #important - storing login token in http only cookies - not on local machine
-        response.set_cookie('refresh',str(refresh),httponly=True)
+        response.set_cookie('access',str(refresh.access_token), httponly=True, samesite='Lax',max_age=60*60*24) #important - storing login token in http only cookies - not on local machine
+
+        response.set_cookie('refresh',str(refresh),httponly=True, max_age=60*60*24*30)
+
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -44,8 +46,18 @@ def login_view(request):
             'message': 'Login successful',
             'role': user.role
         }, status=status.HTTP_200_OK)
-        response.set_cookie('access', str(refresh.access_token), httponly=True, secure=True, samesite='Lax')
-        response.set_cookie('refresh', str(refresh), httponly=True)
+
+        response.set_cookie('access', 
+                            str(refresh.access_token), 
+                            httponly=True, 
+                            samesite='Lax',
+                            max_age=60*60*24) #24 hours
+        # secure=True, 
+        # only for production.. enables https instead http communication
+        response.set_cookie('refresh', 
+                            str(refresh), 
+                            httponly=True,
+                            max_age=60*60*24*30) #30 days
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -53,8 +65,9 @@ def login_view(request):
 # def dashboardView(request):
 #     return render(request, 'accounts/dashboard.html', {'username': request.user.username, 'role': request.user.role})
 
-# @login_required
-# def logout_view(request):
-#     logout(request)
-#     messages.info(request, "Logged out successfully")
-#     return redirect('loginPage')
+@api_view(['POST'])
+def logout_view(request):
+    response = Response({'message':'Logged out successfully'},status=status.HTTP_200_OK)
+    response.delete_cookie('access')
+    response.delete_cookie('refresh')
+    return response

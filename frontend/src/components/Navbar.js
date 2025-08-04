@@ -1,10 +1,28 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useTheme } from "../context/ThemeProvider"
 import { Moon, Sun } from "lucide-react"
+import axios from "axios"
 import './Navbar.css'
 
 export default function Navbar() {
+  // logout function dont remove. or take it along with the logout button 
+  const navigate = useNavigate()
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:8000/api/auth/logout/", { withCredentials: true })
+      localStorage.removeItem('username');
+      localStorage.removeItem('role');
+      localStorage.clear()
+
+      navigate('/')
+    } catch (e) {
+      console.log('Error logging out ' + e.response?.data?.message || e.message)
+    }
+  }
+  // logout function ends here
+
   const { theme, toggleTheme } = useTheme()
+
   return (
     <nav className="navbar navbar-expand-lg ">
       <div className="container-fluid">
@@ -33,6 +51,8 @@ export default function Navbar() {
           </form>
           <Link className="nav-link" to={'/auth/register'}><button className="btn btn-primary ms-2 fs-5 m-2">Register</button></Link>
           <button className="nav-link btn btn-primary m-2" onClick={toggleTheme}>{theme === 'dark' ? <Sun /> : <Moon />}</button>
+          {/* logout button calling the logout function */}
+          <button onClick={handleLogout}>logout</button>
         </div>
       </div>
     </nav>
