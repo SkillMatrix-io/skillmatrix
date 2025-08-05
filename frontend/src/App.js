@@ -80,6 +80,13 @@
             </div>
           </div>
         </div>
+        <div className='Personalization text-center mb-5'>
+          <div className='text-center display-1 fw-semibold mt-5'><span className='text-info'>Personalized</span><span className='text-primary'>Experience</span></div>
+          
+          <p className='text-info text-center display-5 fw-light'>Track your progress and manage your learning journey</p>
+          <div>Student Dashboard Ex.</div>
+          <div>Teacher Dashboard Ex.</div>
+        </div>
       </div>
 
 
