@@ -30,7 +30,7 @@ export default function Navbar() {
         <a className="navbar-brand" href="/">
           <img src="/SKILL_MATRIX_LOGO.png" alt="SkillMatrix Logo" width="30" height="24" style={{ maxWidth: '150px', height: 'auto' }} />
         </a>
-        <Link className="navbar-brand text-primary fs-1" to={'/'}>SkillMatriX</Link>
+        <Link className="navbar-brand text-primary fw-semibold" to={'/'}>SkillMatriX</Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -44,6 +44,9 @@ export default function Navbar() {
             }
             <li className="nav-item">
               <Link className="nav-link fs-5" to={'/courses'}>Courses</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link fs-5" to={'/about'}>About Us</Link>
             </li>
             {!user &&
               <li className="nav-item">

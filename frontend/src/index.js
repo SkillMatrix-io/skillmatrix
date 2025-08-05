@@ -15,6 +15,7 @@ import SessionProvider from './context/SessionContext';
 
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Footer from './components/Footer';
+import About from './pages/About';
 // import 'bootstrap/dist/css/bootstrap.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -35,6 +36,7 @@ root.render(
               }
             />
             <Route path="/auth/:mode" element={<Auth />} />
+            <Route path="/about" element={<About />} />
           </Routes>
           <Footer />
         </BrowserRouter>
