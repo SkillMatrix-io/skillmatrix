@@ -5,6 +5,7 @@ import App from './App';
 
 import Dashboard from './pages/dashboard/Dashboard';
 import Auth from './pages/authentication/Auth';
+import CreateEditCourse from './pages/courses/CourseEdit';
 
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoutes';
@@ -16,32 +17,49 @@ import SessionProvider from './context/SessionContext';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Footer from './components/Footer';
 import About from './pages/About';
-// import 'bootstrap/dist/css/bootstrap.css';
+
+const user = localStorage.getItem('user')
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <SessionProvider>
-      <ThemeProvider>
-        <BrowserRouter>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<App />} />
-            <Route
-              path="/dashboard"
-              element={
+    <ThemeProvider>
+      <BrowserRouter>
+        {/* <CreateEditCourse /> */}
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<App />} />
+
+          <Route
+            path="/dashboard/:role"
+            element={
+              <SessionProvider>
                 <ProtectedRoute>
                   <Dashboard />
                 </ProtectedRoute>
-              }
-            />
+              </SessionProvider>
+            }
+          />
+          <Route
+            path="/create_edit"
+            element={
+              <SessionProvider>
+                <ProtectedRoute>
+                  <CreateEditCourse />
+                </ProtectedRoute>
+              </SessionProvider>
+            }
+          />
+          {!user &&
             <Route path="/auth/:mode" element={<Auth />} />
-            <Route path="/about" element={<About />} />
-          </Routes>
-          <Footer />
-        </BrowserRouter>
-      </ThemeProvider>
-    </SessionProvider>
+          }
+
+          <Route path="/about" element={<About />} />
+
+        </Routes>
+        <Footer />
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

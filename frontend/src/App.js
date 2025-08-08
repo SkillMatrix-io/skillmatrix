@@ -30,51 +30,51 @@
           </div>
           <p className='text-info text-center display-5 fw-light'>Learn from industry experts and build job-ready skills</p>
           <div className='row d-flex justify-content-center align-items-center'>
-            <div class="card m-2" style={{width: "18rem"}}>
-              <img src="/potato.jpeg" class="card-img-top" alt="..." />
+            <div className="card m-2" style={{width: "18rem"}}>
+              <img src="/potato.jpeg" className="card-img-top" alt="..." />
               <div className='card-header'>
-                <h5 class="card-title">Introduction to React.js</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">Web Development</h6>
+                <h5 className="card-title">Introduction to React.js</h5>
+                <h6 className="card-subtitle mb-2 text-body-secondary">Web Development</h6>
               </div>
-              <div class="card-body">
+              <div className="card-body">
                 
                 
-                <p class="card-text">A complete begineers guide to start with React.js</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <p class="mb-0">6 hours</p>
-                  <a href="#" class="btn btn-primary text-light">Enroll Now</a>
+                <p className="card-text">A complete begineers guide to start with React.js</p>
+                <div className="d-flex justify-content-between align-items-center">
+                  <p className="mb-0">6 hours</p>
+                  <a href='/' className="btn btn-primary text-light">Enroll Now</a>
                 </div> 
               </div>
             </div>
-            <div class="card m-2" style={{width: "18rem"}}>
-              <img src="/potato.jpeg" class="card-img-top" alt="..." />
+            <div className="card m-2" style={{width: "18rem"}}>
+              <img src="/potato.jpeg" className="card-img-top" alt="..." />
               <div className='card-header'>
-                <h5 class="card-title">Introduction to React.js</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">Web Development</h6>
+                <h5 className="card-title">Introduction to React.js</h5>
+                <h6 className="card-subtitle mb-2 text-body-secondary">Web Development</h6>
               </div>
-              <div class="card-body">
+              <div className="card-body">
                 
                 
-                <p class="card-text">A complete begineers guide to start with React.js</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <p class="mb-0">6 hours</p>
-                  <a href="#" class="btn btn-primary text-light">Enroll Now</a>
+                <p className="card-text">A complete begineers guide to start with React.js</p>
+                <div className="d-flex justify-content-between align-items-center">
+                  <p className="mb-0">6 hours</p>
+                  <a href='/' className="btn btn-primary text-light">Enroll Now</a>
                 </div> 
               </div>
             </div>
-            <div class="card m-2" style={{width: "18rem"}}>
-              <img src="/potato.jpeg" class="card-img-top" alt="..." />
+            <div className="card m-2" style={{width: "18rem"}}>
+              <img src="/potato.jpeg" className="card-img-top" alt="..." />
               <div className='card-header'>
-                <h5 class="card-title">Introduction to React.js</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">Web Development</h6>
+                <h5 className="card-title">Introduction to React.js</h5>
+                <h6 className="card-subtitle mb-2 text-body-secondary">Web Development</h6>
               </div>
-              <div class="card-body">
+              <div className="card-body">
                 
                 
-                <p class="card-text">A complete begineers guide to start with React.js</p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <p class="mb-0">6 hours</p>
-                  <a href="#" class="btn btn-primary text-light">Enroll Now</a>
+                <p className="card-text">A complete begineers guide to start with React.js</p>
+                <div className="d-flex justify-content-between align-items-center">
+                  <p className="mb-0">6 hours</p>
+                  <a href='/' className="btn btn-primary text-light">Enroll Now</a>
                 </div> 
               </div>
             </div>

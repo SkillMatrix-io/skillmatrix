@@ -36,8 +36,10 @@ class Lesson(models.Model):
     content_file = models.FileField(upload_to='lessons/', null=True, blank=True)
     video_url = models.URLField(blank=True, null=True)
     order = models.PositiveIntegerField()
+    text_content = models.TextField(null=True, blank=True)
 
     class Meta:
+        # ensures ordered read
         ordering = ['order']
 
     def __str__(self):

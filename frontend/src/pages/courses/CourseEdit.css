@@ -1,0 +1,106 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    color: black;
+}
+button {
+    color: black;
+}
+
+.heading-2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.heading-3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+}
+
+.input,
+.textarea,
+select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.file-input {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.checkbox-label {
+    display: inline-block;
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.label-bold {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.lesson-section {
+    margin-top: 1rem;
+}
+
+.lesson-box {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+.btn-outline,
+.btn-primary,
+.btn-danger {
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #333;
+    background: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-outline:hover {
+    /* background: #f0f0f0; */
+}
+
+.btn-primary {
+    /* border-color: #333;
+    /* background: #eaeaea; */ 
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    /* background: #d5d5d5; */
+}
+
+.btn-danger {
+    color: red;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    text-decoration: underline;
+}

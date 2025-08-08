@@ -12,9 +12,6 @@ import datetime
 
 User = get_user_model()
 
-# Import or define validate_access_token and Expired
-from rest_framework.exceptions import AuthenticationFailed
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_view(request):
@@ -33,6 +30,7 @@ def register_view(request):
         response.set_cookie('access',str(refresh.access_token), httponly=True, samesite='Lax',max_age=60*60*24) #important - storing login token in http only cookies - not on local machine
 
         response.set_cookie('refresh',str(refresh),httponly=True, max_age=60*60*24*30)
+        print(str(refresh.access_token))
 
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -119,6 +117,7 @@ def session_view(request):
             user_id = access_obj['user_id']
             user = User.objects.get(id=user_id)
             serializer = UserSerializer(user)
+            print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except TokenError:
             pass
@@ -143,5 +142,5 @@ def session_view(request):
             return Response({"detail": "Refresh token expired"}, status=status.HTTP_401_UNAUTHORIZED)
         except User.DoesNotExist:
             return Response({"detail": "Invalid user."}, status=status.HTTP_401_UNAUTHORIZED)
-
+    print("this block 6")
     return Response({"detail": "Not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)

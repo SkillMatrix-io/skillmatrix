@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from 'axios'
 import './Login.css'
 import { useNavigate } from 'react-router-dom'
-import { useSession } from "../../context/SessionContext"
+
+const baseURL = `${process.env.REACT_APP_API_URL}/api`;
 
 export default function Register() {
     const [userRole, setUserRole] = useState('student')
@@ -36,7 +37,6 @@ export default function Register() {
 
 export function UserRegister({ role }) {
     const navigate = useNavigate()
-    const { setUser } = useSession()
     const [form, setForm] = useState({
         username: '',
         email: '',
@@ -45,7 +45,14 @@ export function UserRegister({ role }) {
         confirm_password: '',
         bio: 'this is not null bio'
     });
+    
     const [passwordErrors, setPasswordErrors] = useState([]);
+    useEffect(()=>{
+        setForm(prevForm => ({
+            ...prevForm,
+            role:role
+        }))
+    }, [role])
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -67,15 +74,16 @@ export function UserRegister({ role }) {
     const submit = async (e) => {
         e.preventDefault(); // prevent form reload
         try {
-            const response = await axios.post("http://localhost:8000/api/auth/register/", form, { withCredentials: true });
+            const response = await axios.post(`${baseURL}/auth/register/`, form, { withCredentials: true });
             // By default, browsers block sending cookies in cross-origin requests for security reasons.
             // so withCredential: false, will send no cookies, will save no cookies
+
+            console.log(`Sent userdata: ${role}`)
             console.log(response?.data);  // could be token, user data, etc.
             // Redirect to dashboard or save token
-            if(response.data?.role === 'student'){
-                setUser(response.data);
-                navigate('/dashboard/student')
-            }
+            localStorage.setItem("user", JSON.stringify(response.data));
+            navigate(`/dashboard/${role}`)
+            
             // If you want to store session info or use HttpOnly cookies for JWT, you must enable withCredentials.
 
         } catch (error) {
@@ -95,12 +103,6 @@ export function UserRegister({ role }) {
                 <label htmlFor="email">Email</label>
                 <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" />
                 <br />
-                {/* <label htmlFor="fullName">Full Name</label> */}
-                {/* <input type="text" id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} /> */}
-                <br />
-                {/* <label htmlFor="bio">Bio</label>
-                <textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} /> */}
-
                 {/* <label htmlFor="avatar">Choose Avatar</label> <select id="avatar" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)}> <option value="avatar1.png">Avatar 1</option> <option value="avatar2.png">Avatar 2</option> </select> */}
                 <br />
                 <label htmlFor="password">Password</label>
