@@ -69,7 +69,7 @@ export default function Navbar() {
           <button className="nav-link btn btn-primary m-2" onClick={toggleTheme}>{theme === 'dark' ? <Sun /> : <Moon />}</button>
 
           {/* logout button calling the logout function */}
-          {user && <button onClick={() => handleLogout}>logout</button>}
+          {user && <button onClick={handleLogout}>logout</button>}
         </div>
       </div>
     </nav>

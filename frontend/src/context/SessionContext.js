@@ -26,7 +26,10 @@ export default function SessionProvider({ children }) {
         fetch(`${baseURL}/session`, { credentials: 'include' })
             .then(res => res.ok ? res.json() : Promise.reject())
             .then(data => setUser(data))
-            .catch(() => setUser(null))
+            .catch(() => {
+                setUser(null)
+                localStorage.setItem("user",null)
+            })
             .finally(() => {
                 setLoading(false);
             });

@@ -204,8 +204,8 @@ export default function CreateEditCourse({ courseId = null }) {
                 });
                 alert('Course updated!');
             } else {
-                // await axios.post(`${API_URL}private/`, formData, {
-                await axios.post(`${API_URL}create/`, formData, {
+                await axios.post(`${API_URL}private/`, formData, {
+                // await axios.post(`${API_URL}create/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });

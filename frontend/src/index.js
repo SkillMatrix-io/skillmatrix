@@ -18,46 +18,47 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Footer from './components/Footer';
 import About from './pages/About';
 
-const user = localStorage.getItem('user')
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ThemeProvider>
       <BrowserRouter>
         {/* <CreateEditCourse /> */}
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<App />} />
+        <SessionProvider>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<App />} />
 
-          <Route
-            path="/dashboard/:role"
-            element={
-              <SessionProvider>
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              </SessionProvider>
+            <Route
+              path="/dashboard/:role"
+              element={
+                <SessionProvider>
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                </SessionProvider>
+              }
+            />
+            <Route
+              path="/create_edit"
+              element={
+                <SessionProvider>
+                  <ProtectedRoute>
+                    <CreateEditCourse />
+                  </ProtectedRoute>
+                </SessionProvider>
+              }
+            />
+            {
+              <Route path="/auth/:mode" element={<Auth />} />
             }
-          />
-          <Route
-            path="/create_edit"
-            element={
-              <SessionProvider>
-                <ProtectedRoute>
-                  <CreateEditCourse />
-                </ProtectedRoute>
-              </SessionProvider>
-            }
-          />
-          {!user &&
-            <Route path="/auth/:mode" element={<Auth />} />
-          }
 
-          <Route path="/about" element={<About />} />
+            <Route path="/about" element={<About />} />
 
-        </Routes>
-        <Footer />
+          </Routes>
+          <Footer />
+
+        </SessionProvider>
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>
