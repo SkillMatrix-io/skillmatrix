@@ -31,6 +31,7 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders' #allowing origins
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +41,6 @@ INSTALLED_APPS = [
     'user',
     'courses',
     'rest_framework', #rest requests
-    'corsheaders' #allowing origins
 ]
 
 CORS_ALLOW_CREDENTIALS = True
