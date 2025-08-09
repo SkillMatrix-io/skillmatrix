@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import CategoryListAPIView, course_create_view
+from .views import CategoryListAPIView
 from courses.api_views import CourseCreateAPIView
 
 app_name = 'courses'
@@ -17,7 +17,6 @@ urlpatterns = [
     # path('instructor/<int:course_id>/delete/', views.instructor_course_delete_view, name='instructor_course_delete'),
     # path('test-bootstrap/', views.bootstrap_test_view, name='bootstrap_test'),
 
-    path('private/', CourseCreateAPIView.as_view(), name='api_create_course'),
-    path('create/', course_create_view, name='api_create_course'),
+    path('create/', CourseCreateAPIView.as_view(), name='api_create_course'),
     path('categories/', CategoryListAPIView.as_view(), name='category-list'),
 ]

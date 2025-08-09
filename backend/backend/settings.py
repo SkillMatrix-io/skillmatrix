@@ -94,7 +94,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     # change local to default to switch between local / cloud db lol
-    'local': {
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
@@ -102,7 +102,7 @@ DATABASES = {
         'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='3306'),
     },
-    'default': {
+    'cloud': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('MYSQL_ADDON_DB'),
         'USER': config('MYSQL_ADDON_USER'),
@@ -111,27 +111,15 @@ DATABASES = {
         'PORT': config('MYSQL_ADDON_PORT', default='3306'),
     },
 }
-
-    # dont remove ->
-    # Database using all the variables from .env HAHA security
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',  
-    #     'NAME': config("DB_NAME"),
-    #     'USER': config("DB_USER"),
-    #     'PASSWORD': config("DB_PASSWORD"),
-    #     'HOST': config("DB_HOST"),
-    #     'PORT': '5432',  # default for postgres
-    # }
-
-# CACHES = {
-#     'default':{
-#         'BACKEND':'django_redis.cache.RedisCache',
-#         'LOCATION':'redis://127.0.0.1:6376/1',
-#         'OPTIONS':{
-#             'CLIENT_CLASS':'django_redis.client.DefaultClient'
-#         }
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",  # /1 means DB index 1
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

@@ -142,5 +142,4 @@ def session_view(request):
             return Response({"detail": "Refresh token expired"}, status=status.HTTP_401_UNAUTHORIZED)
         except User.DoesNotExist:
             return Response({"detail": "Invalid user."}, status=status.HTTP_401_UNAUTHORIZED)
-    print("this block 6")
     return Response({"detail": "Not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
