@@ -1,9 +1,10 @@
 # courses/serializers.py
 from rest_framework import serializers
 from .models import Course, Lesson, Category
-
+from .utils.supabase import upload_lesson_file
 
 class LessonSerializer(serializers.ModelSerializer):
+    content_file = serializers.FileField(write_only=True, required=False)
     class Meta:
         model = Lesson
         exclude = ['course']
@@ -12,11 +13,13 @@ class LessonSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, required=False)
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+
     class Meta:
         model = Course
         fields = '__all__'
         read_only_fields = ['instructor']
     # since we are trying to send nested queries we'll set up nested serializer for lesson here 
+
     def create(self,validated_data):
         instructor = self.context['request'].user
         lessons_data = validated_data.pop('lessons',[])
@@ -26,7 +29,12 @@ class CourseSerializer(serializers.ModelSerializer):
         course.categories.set(categories_data)
 
         for lesson_data in lessons_data:
+            file = lesson_data.pop('content_file', None)
+            if file:
+                public_url = upload_lesson_file(file,lesson_data.get('title','untitled'))
+                lesson_data['content_url'] = public_url
             Lesson.objects.create(course=course, **lesson_data)
+
         return course
     
     # def update(self,validated_data):

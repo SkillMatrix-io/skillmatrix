@@ -3,14 +3,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import './CourseEdit.css'
 
-// supabase helper to upload files --> we upload files form here take url and send hehe
-import { createClient } from '@supabase/supabase-js';
-export const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
-// handles upload and taking url of the file after upload
-
 const isValidURL = (str) => {
     try {
         new URL(str);
@@ -20,36 +12,19 @@ const isValidURL = (str) => {
     }
 };
 
-async function updatedLessonsFile(file, lessonTitle) {
-    const { data, error } = await supabase
-        .storage
-        .from('lesson-files')
-        .upload(`lessons/${Date.now()}_${lessonTitle}_${file.name}`, file)
-
-    if (error) throw error;
-
-    const { data: publicUrlData } = supabase
-        .storage
-        .from('lesson-files')
-        .getPublicUrl(data.path)
-
-    return publicUrlData.publicUrl
-}
-
 const API_URL = `${process.env.REACT_APP_API_URL}/api/courses/`;
 
 const emptyLesson = {
     title: '',
+    description: '',
     content_type: 'video',
     content_file: null,
-    video_url: '',
+    file_url: '',
     text_content: '',
     order: 1,
 };
 
 export default function CreateEditCourse({ courseId = null }) {
-    const [uploadingLessonIndex, setUploadingLessonIndex] = useState(null);
-    // const lessonListRef = useRef();
     const [courseData, setCourseData] = useState({
         title: '',
         description: '',
@@ -60,7 +35,7 @@ export default function CreateEditCourse({ courseId = null }) {
     });
 
     const [lessons, setLessons] = useState([]);
-    const [categories, setCategories] = useState([
+    const [categories] = useState([
         { "id": 3, "name": "Artificial Intelligence" },
         { "id": 8, "name": "Blockchain" },
         { "id": 6, "name": "Cloud Computing" },
@@ -108,19 +83,10 @@ export default function CreateEditCourse({ courseId = null }) {
                 toast.error("File too large!");
                 return;
             }
-            try {
-                setUploadingLessonIndex(index); // Spinner ON
-                const uploadedUrl = await updatedLessonsFile(files[0], lesson.title);
-                lesson.content_file = uploadedUrl;
-                lesson.video_url = "" // Clear video_url when file is chosen
-            } catch (error) {
-                toast.error("Failed to upload file to Supabase!");
-                return;
-            } finally {
-                setUploadingLessonIndex(null); // Spinner OFF
-            }
-        } else if (name === "video_url") {
-            lesson.video_url = value;
+            lesson.content_file = files[0];
+            lesson.file_url = ""; // clear existing URL if uploading a new file
+        } else if (name === "file_url") {
+            lesson.file_url = value;
             lesson.content_file = null; // clear file if URL entered
         } else {
             lesson[name] = type === "checkbox" ? event.target.checked : value;
@@ -129,14 +95,6 @@ export default function CreateEditCourse({ courseId = null }) {
         updatedLessons[index] = lesson;
         setLessons(updatedLessons);
     };
-
-    // When sending to backend:
-    // If content_file exists → prioritize that.
-    // If video_url exists → send that instead.
-    // If content_type === "text" → send text_content.
-    // You might want to handle this logic in handleSubmit() like:
-    //     // Example within your form submission:
-    //     lessonData.content = lesson.content_file || lesson.video_url || lesson.text_content
 
     const addLesson = () => {
         setLessons((prev) => [...prev,
@@ -167,19 +125,27 @@ export default function CreateEditCourse({ courseId = null }) {
         }
 
         const formData = new FormData();
+
+        //course fields
         formData.append("title", String(courseData.title));
         formData.append("description", String(courseData.description));
         formData.append("price", Number(courseData.price));
         formData.append("is_published", courseData.is_published);
 
-        Object.entries(courseData).forEach(([key, value]) => {
-            if (key === 'categories') {
-                value.forEach((catId) => formData.append('categories', catId));
-            } else if (value !== null) {
-                formData.append(key, value);
-            }
+        // categries
+        (courseData.categories || []).forEach((catId) => {
+            formData.append('categories', catId);
         });
 
+        // Object.entries(courseData).forEach(([key, value]) => {
+        //     if (key === 'categories') {
+        //         value.forEach((catId) => formData.append('categories', catId));
+        //     } else if (value !== null) {
+        //         formData.append(key, value);
+        //     }
+        // });
+
+        // Lesson
         const updatedLessons = lessons.map((lesson, i) => {
             const copied = { ...lesson };
 
@@ -187,9 +153,9 @@ export default function CreateEditCourse({ courseId = null }) {
                 formData.append(`file_${i}`, copied.content_file);
                 copied.content_file = `file_${i}`;
             }
-            if (copied.video_url && !isValidURL(copied.video_url)) {
+            if (copied.file_url && !isValidURL(copied.file_url)) {
                 toast.error(`Invalid video URL in lesson ${i + 1}`);
-                throw new Error(`Invalid video URL: ${copied.video_url}`);
+                throw new Error(`Invalid video URL: ${copied.file_url}`);
             }
             return copied;
         });
@@ -198,14 +164,14 @@ export default function CreateEditCourse({ courseId = null }) {
 
         try {
             if (courseId) {
-                await axios.put(`${API_URL}private/${courseId}/`, formData, {
+                await axios.put(`${API_URL}create/${courseId}/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });
                 alert('Course updated!');
             } else {
-                await axios.post(`${API_URL}private/`, formData, {
-                // await axios.post(`${API_URL}create/`, formData, {
+                await axios.post(`${API_URL}create/`, formData, {
+                    // await axios.post(`${API_URL}create/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });
@@ -219,7 +185,7 @@ export default function CreateEditCourse({ courseId = null }) {
 
     const clearLessonMedia = (index) => {
         const updatedLessons = [...lessons];
-        updatedLessons[index].video_url = "";
+        updatedLessons[index].file_url = "";
         updatedLessons[index].content_file = null;
         setLessons(updatedLessons);
     };
@@ -254,9 +220,18 @@ export default function CreateEditCourse({ courseId = null }) {
                         checked={courseData.is_published}
                         onChange={handleChange}
                         // doesnt let publish evne with lesson == 1 but emptty fields
-                        disabled={lessons.length === 0 || lessons.some(lesson => !lesson.title || (!lesson.video_url && !lesson.content_file && !lesson.text_content))}
+                        disabled={
+                            lessons.length === 0 ||
+                            lessons.some(lesson => {
+                                const hasText = lesson.text_content?.trim();
+                                const hasFile = !!lesson.content_file;
+                                const hasUrl = isValidURL(lesson.file_url || "");
+                                return !lesson.title || (!hasText && !hasFile && !hasUrl);
+                            })
+                        }
                     /> Published
                 </label>
+                <p>Add atleast one lesson to publish</p>
 
                 <div className="category-group">
                     <p className="label-bold">Categories:</p>
@@ -285,6 +260,22 @@ export default function CreateEditCourse({ courseId = null }) {
                                 className="input"
                             />
 
+
+
+                            <label>Lesson Description</label>
+                            <textarea name="description"
+                                value={lesson.description}
+                                onChange={(e) => handleLessonChange(index, e)} placeholder="Lesson Description" className="textarea"></textarea>
+
+                            <label>Text Content</label>
+                            <textarea
+                                name="text_content"
+                                value={lesson.text_content || ""}
+                                onChange={(e) => handleLessonChange(index, e)}
+                                className="textarea"
+                                placeholder="Enter lesson text here (markdown supported)"
+                            ></textarea>
+
                             <label>Content Type</label>
                             <select
                                 name="content_type"
@@ -295,41 +286,33 @@ export default function CreateEditCourse({ courseId = null }) {
                                 <option value="">-- Select Type --</option>
                                 <option value="video">Video</option>
                                 <option value="pdf">PDF</option>
-                                <option value="text">Text</option>
                             </select>
 
                             {/* Conditional rendering based on type */}
                             {lesson.content_type === "video" || lesson.content_type === "pdf" ? (
                                 <>
-                                    {uploadingLessonIndex === index ? (
-                                        <>
-                                            <div>Uploading file... ⏳</div></>
-                                    ) : (
-                                        <>
-                                            <label>Upload File</label>
-                                            <input
-                                                type="file"
-                                                name="content_file"
-                                                onChange={(e) => handleLessonChange(index, e)}
-                                                className="file-input"
-                                                disabled={!!lesson.video_url}
-                                            />
+                                    <label>Upload File</label>
+                                    <input
+                                        type="file"
+                                        name="content_file"
+                                        onChange={(e) => handleLessonChange(index, e)}
+                                        className="file-input"
+                                        disabled={!!lesson.file_url}
+                                    />
 
-                                            <label>Or Enter URL</label>
-                                            <input
-                                                name="video_url"
-                                                value={lesson.video_url}
-                                                onChange={(e) => handleLessonChange(index, e)}
-                                                placeholder="Video or PDF URL"
-                                                className="input"
-                                                disabled={!!lesson.content_file} />
-                                            <button onClick={() => clearLessonMedia(index)}>Clear?</button>
-                                        </>
-                                    )}
+                                    <label>Or Enter URL</label>
+                                    <input
+                                        name="file_url"
+                                        value={lesson.file_url}
+                                        onChange={(e) => handleLessonChange(index, e)}
+                                        placeholder="Video or PDF URL"
+                                        className="input"
+                                        disabled={!!lesson.content_file} />
+                                    <button type="button" onClick={() => clearLessonMedia(index)}>Clear?</button>
                                 </>
                             ) : null}
 
-                            {lesson.content_type === "text" ? (
+                            {/* {lesson.content_type === "text" ? (
                                 <>
                                     <label>Text Content</label>
                                     <textarea
@@ -340,7 +323,7 @@ export default function CreateEditCourse({ courseId = null }) {
                                         placeholder="Enter lesson text here (markdown supported)"
                                     ></textarea>
                                 </>
-                            ) : null}
+                            ) : null} */}
 
                             <button
                                 type="button"

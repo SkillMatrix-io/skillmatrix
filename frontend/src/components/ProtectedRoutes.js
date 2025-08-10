@@ -8,4 +8,11 @@ const ProtectedRoute = ({ children }) => {
     return children;
 };
 
+export const PublicRoutes = ({ children }) => {
+    const user = localStorage.getItem('user')
+    if (!user) {
+        return children
+    }
+}
+
 export default ProtectedRoute;

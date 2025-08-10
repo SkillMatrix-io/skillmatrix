@@ -60,7 +60,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com"
+    "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com","http://192.168.173.176:3000"
 ]
 CSRF_ALLOWED_ORIGINS = [
     "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com"
@@ -110,15 +110,15 @@ DATABASES = {
         'PORT': config('MYSQL_ADDON_PORT', default='3306'),
     },
 }
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",  # /1 means DB index 1
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/2",  # /1 means DB index 1
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

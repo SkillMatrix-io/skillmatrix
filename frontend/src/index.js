@@ -51,10 +51,9 @@ root.render(
                 </SessionProvider>
               }
             />
-            {
-              <Route path="/auth/:mode" element={<Auth />} />
-            }
-
+            <Route path="/auth/:mode" element={
+              <Auth />
+            } />
             <Route path="/about" element={<About />} />
 
           </Routes>

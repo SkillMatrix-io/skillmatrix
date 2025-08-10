@@ -36,6 +36,7 @@ export default function Register() {
 }
 
 export function UserRegister({ role }) {
+    const [response,setResponse] = useState("")
     const navigate = useNavigate()
     const [form, setForm] = useState({
         username: '',
@@ -77,7 +78,7 @@ export function UserRegister({ role }) {
             const response = await axios.post(`${baseURL}/auth/register/`, form, { withCredentials: true });
             // By default, browsers block sending cookies in cross-origin requests for security reasons.
             // so withCredential: false, will send no cookies, will save no cookies
-
+            setResponse(response.data)
             console.log(`Sent userdata: ${role}`)
             console.log(response?.data);  // could be token, user data, etc.
             // Redirect to dashboard or save token
@@ -96,6 +97,7 @@ export function UserRegister({ role }) {
         <>
             <p>{role.charAt(0).toUpperCase() + role.slice(1)} Register here</p> {/* capitalize role lol */}
             <h1>Fill your details to register</h1>
+            {response && <p>response</p>}
             <form onSubmit={submit}>
                 <label htmlFor="username">Username</label>
                 <input name="username" value={form.username} onChange={handleChange} placeholder="Username" />

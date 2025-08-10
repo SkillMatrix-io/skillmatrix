@@ -33,6 +33,7 @@ class CourseCreateAPIView(APIView):
         lessons_data = json.loads(request.data.get('lessons', '[]'))
         for i, lesson in enumerate(lessons_data):
             file_key = lesson.get('content_file')
+            # imp for files---->
             if file_key in request.FILES:
                 lesson['content_file'] = request.FILES[file_key]
             else:
@@ -51,6 +52,7 @@ class CourseCreateAPIView(APIView):
             price_val = float(request.data.get('price', 0))
         except ValueError:
             price_val = 0
+            
         data = {
         'title': request.data.get('title', ''),
         'description': request.data.get('description', ''),
