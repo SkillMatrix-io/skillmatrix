@@ -1,5 +1,5 @@
 # courses/serializers.py
-from rest_framework import serializers
+from rest_framework import serializers #type: ignore
 from .models import Course, Lesson, Category
 from .utils.supabase import upload_lesson_file
 
@@ -9,6 +9,13 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         exclude = ['course']
 
+class CourseCardSerializer(serializers.ModelSerializer):
+    instructor_username = serializers.CharField(source="instructor.username", read_only=True)
+
+    class Meta:
+        model = Course
+        fields = ["id", "title", "price", "description", "cover_image", "instructor_username"]
+
 # Serializers convert Django models ↔ JSON and do field-level validation.
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, required=False)
@@ -17,6 +24,7 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
+        # bad fetching lol ^
         read_only_fields = ['instructor']
     # since we are trying to send nested queries we'll set up nested serializer for lesson here 
 

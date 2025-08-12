@@ -5,7 +5,7 @@ from user.authentication import CookieJWTAuthentication
 from rest_framework.generics import ListAPIView
 from .models import Course, Category
 from rest_framework.response import Response
-from .serializers import CategorySerializer, CourseSerializer
+from .serializers import CategorySerializer, CourseSerializer,CourseCardSerializer
 
 # @api_view(['POST'])
 # @authentication_classes([CookieJWTAuthentication])
@@ -55,12 +55,29 @@ class CategoryListAPIView(ListAPIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [AllowAny]
 
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def course_list_view(request):
+#     # courses = Course.objects.filter(is_published=True) #query to filter courses
+#     courses = Course.objects #query to filter courses
+#     serializer = CourseSerializer(courses, many=True) #running the query to db thru serializer 
+#     print("Courses sent: ",serializer.data)
+#     return Response(serializer.data)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def course_list_view(request):
     # courses = Course.objects.filter(is_published=True) #query to filter courses
-    courses = Course.objects #query to filter courses
-    serializer = CourseSerializer(courses, many=True) #running the query to db thru serializer 
+    courses = (
+    Course.objects.filter(is_published=True).select_related("instructor")  # join user table
+    .only(
+        "id",
+        "title",
+        "price",
+        "description",
+        "cover_image",
+        "instructor__username", #from meta
+    ))
+    serializer = CourseCardSerializer(courses, many=True) #running the query to db thru serializer 
     print("Courses sent: ",serializer.data)
     return Response(serializer.data)
 
@@ -71,26 +88,42 @@ def course_detail_view(request, course_id):
     lessons = course.lessons.all()
     return course, lessons
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def instructor_course_list_view(request):
-#     courses = Course.objects.filter(instructor=request.user)
-#     return courses
+# Course.objects.filter(teacher=request.user)
+#     .select_related("teacher")
+#     .only("id", "title", "cover_image", "price", "description")
 
-# def instructor_course_create_view(request):
-#     if request.method == 'POST':
-#         form = CourseForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             course = form.save(commit=False)
-#             course.instructor = request.user
-#             course.save()
-#             form.save_m2m()
-#             messages.success(request, 'Course created successfully')
-#             return redirect('courses:instructor_course_list')
-#     else:
-#         form = CourseForm()
-#     return render(request, 'courses/instructor_course_form.html', {'form': form, 'create': True})
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def instructor_course_list_view(request):
+    courses = (
+        Course.objects
+        .filter(instructor=request.user)
+        .select_related("instructor")
+        .only("id", "title", "price", "description", "instructor__username")
+    )
+    serializer = CourseCardSerializer(courses, many=True)
+    return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def publish_view(request,pk):
+    status = request.data.get("status")
+    if status == False:
+        Course.objects.filter(pk=pk).update(is_published=True)
+        return Response({"status":"Published"})
+    else:
+        Course.objects.filter(pk=pk).update(is_published=False)
+        return Response({"status":"Unpublished"})
+    
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_view(request,pk):
+    try:
+        course = Course.objects.get(pk=pk, instructor=request.user)
+        course.delete()
+        return Response({"status":"deleted"},status=204)
+    except Course.DoesNotExist:
+        return Response({"error":"Course not found"},status=404)
 # def instructor_course_update_view(request, course_id):
 #     course = get_object_or_404(Course, pk=course_id, instructor=request.user)
 #     if request.method == 'POST':

@@ -13,14 +13,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=[('student', 'Student'), ('teacher', 'Teacher')])  # adjust if needed
     class Meta:
         model=User
-        fields=('username','email','password','role','bio')
+        fields=('username','email','password','role','bio','avatar')
     def create(self, validated_data):
         user=User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
             role=validated_data['role'],
-            bio=validated_data.get('bio', '')  # optional fallback
+            bio=validated_data.get('bio', ''),  # optional fallback
+            avatar=validated_data.get('avatar', '1')
         )
         return user
     # create_user hashes the password 
@@ -34,4 +35,4 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'role', 'bio', 'avatar_url')  # add 'avatar_url' or others if needed
+        fields = ('id', 'username', 'role', 'bio', 'avatar')  # add 'avatar_url' or others if needed

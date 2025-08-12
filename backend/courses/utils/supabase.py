@@ -2,7 +2,7 @@
 import os
 from supabase import create_client
 from datetime import datetime
-from decouple import config # for .env 
+from decouple import config # for .env #type: ignore
 
 # SUPABASE_URL = os.environ.get("SUPABASE_URL")
 # SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY")

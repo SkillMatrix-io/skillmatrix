@@ -6,13 +6,13 @@
 # and all of them will have almost same response data even tho different function
 # INTRODUCING DJANGO API VIEW BUT CLASS BASED !!!!
 
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.views import APIView #type: ignore
+from rest_framework.permissions import IsAuthenticated #type: ignore
+from rest_framework.response import Response #type: ignore
+from rest_framework import status #type: ignore
 from .serializers import CourseSerializer
 from user.authentication import CookieJWTAuthentication
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser #type: ignore
 # as serializer needs parsed input just parsing the lessons here.
 
 import json

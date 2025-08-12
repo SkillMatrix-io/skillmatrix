@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-from decouple import config # for .env 
+from decouple import config # for .env #type: ignore
 # incase any library is not getting imported even after running requiements.txt
 # read _requirements.txt file 
 SECRET_KEY = config("SECRET_KEY")

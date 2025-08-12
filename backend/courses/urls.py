@@ -11,12 +11,9 @@ urlpatterns = [
     path('<int:course_id>/', views.course_detail_view, name='course_detail'),
 
     # # Instructor-only pages
-    # path('instructor/', views.instructor_course_list_view, name='instructor_course_list'),
-    # path('instructor/create/', views.instructor_course_create_view, name='instructor_course_create'),
-    # path('instructor/<int:course_id>/edit/', views.instructor_course_update_view, name='instructor_course_update'),
-    # path('instructor/<int:course_id>/delete/', views.instructor_course_delete_view, name='instructor_course_delete'),
-    # path('test-bootstrap/', views.bootstrap_test_view, name='bootstrap_test'),
-
+    path('instructor/', views.instructor_course_list_view, name='instructor_course_list'),
     path('create/', CourseCreateAPIView.as_view(), name='api_create_course'),
     path('categories/', CategoryListAPIView.as_view(), name='category-list'),
+    path('publishing/<int:pk>/', views.publish_view, name='publishing'),
+    path('delete/<int:pk>/', views.delete_view, name='delete'),
 ]

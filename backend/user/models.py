@@ -9,9 +9,9 @@ class User(AbstractUser):
     )
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    bio = models.TextField(blank=True, null=True, default='pls work')
+    bio = models.TextField(blank=True, null=True, default='')
     full_name = models.CharField(max_length=100, blank=True)
-    avatar_url = models.URLField(blank=True, null=True, default='https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png')
+    avatar = models.IntegerField(blank=True, null=True, default=1)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(blank=True, null=True)  # handled by Django
     def __str__(self):

@@ -36,22 +36,27 @@ export default function Register() {
 }
 
 export function UserRegister({ role }) {
-    const [response,setResponse] = useState("")
+    const [response, setResponse] = useState("")
     const navigate = useNavigate()
+
+    // avatar selection
+    const [avatars, setAvatars] = useState([]);
+
     const [form, setForm] = useState({
         username: '',
         email: '',
-        role: role ,
+        role: role,
         password: '',
         confirm_password: '',
-        bio: 'this is not null bio'
+        bio: '',
+        avatar: 1
     });
-    
+
     const [passwordErrors, setPasswordErrors] = useState([]);
-    useEffect(()=>{
+    useEffect(() => {
         setForm(prevForm => ({
             ...prevForm,
-            role:role
+            role: role
         }))
     }, [role])
 
@@ -84,7 +89,7 @@ export function UserRegister({ role }) {
             // Redirect to dashboard or save token
             localStorage.setItem("user", JSON.stringify(response.data));
             navigate(`/dashboard/${role}`)
-            
+
             // If you want to store session info or use HttpOnly cookies for JWT, you must enable withCredentials.
 
         } catch (error) {
@@ -93,6 +98,23 @@ export function UserRegister({ role }) {
             // Show error to user
         }
     };
+
+    useEffect(() => {
+        const allAvatars = Array.from({ length: 24 }, (_, i) => i + 1)
+
+        const random10 = allAvatars.sort(() => Math.random() - 0.5)
+            .slice(0, 10)
+
+        setAvatars(random10)
+    }, [])
+
+    const handleSelect = (id) => {
+        setForm(prevForm => ({
+            ...prevForm,
+            avatar: id
+        }));
+    };
+
     return (
         <>
             <p>{role.charAt(0).toUpperCase() + role.slice(1)} Register here</p> {/* capitalize role lol */}
@@ -117,6 +139,17 @@ export function UserRegister({ role }) {
                 <br />
                 <label htmlFor="password">Confirm Password</label>
                 <input name="confirm_password" type="password" value={form.confirm_password} onChange={handleChange} placeholder="Confirm Password" />
+                <div className="avatar-grid">
+                    {avatars.map((id) => (
+                        <div
+                            key={id}
+                            className={`avatar-item ${form.avatar === id ? "selected" : ""}`}
+                            onClick={() => handleSelect(id)}
+                        >
+                            <img src={`/avatar/${id}.png`} alt={`Avatar ${id}`} />
+                        </div>
+                    ))}
+                </div>
                 <button type="submit">Submit</button>
                 {error && <p>{error}</p>}
             </form>

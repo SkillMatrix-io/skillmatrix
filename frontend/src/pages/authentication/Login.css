@@ -55,3 +55,34 @@
         transform: translateY(0);
     }
 }
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    max-width: 400px;
+}
+
+.avatar-item {
+    padding: 4px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.avatar-item img {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.avatar-item:hover {
+    border-color: #ccc;
+}
+
+.avatar-item.selected {
+    border-color: #007bff;
+    transform: scale(1.05);
+}
