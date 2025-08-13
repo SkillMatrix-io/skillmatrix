@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user',
     'courses',
+    'enrollments',
     'rest_framework', #rest requests
 ]
 
