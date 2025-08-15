@@ -5,7 +5,8 @@ from user.authentication import CookieJWTAuthentication
 from rest_framework.generics import ListAPIView
 from .models import Course, Category
 from rest_framework.response import Response
-from .serializers import CategorySerializer,CourseCardSerializer
+from .serializers import CategorySerializer,CourseCardSerializer, CourseDialogSerializer
+from pprint import pprint
 
 class CategoryListAPIView(ListAPIView):
     queryset = Category.objects.all()
@@ -34,9 +35,14 @@ def course_list_view(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def course_detail_view(request, course_id):
-    course = get_object_or_404(Course, pk=course_id, is_published=True)
-    lessons = course.lessons.all()
-    return course, lessons
+    course = get_object_or_404(
+        Course.objects.select_related("instructor"),
+        pk=course_id,
+        is_published=True
+    )
+    serializer = CourseDialogSerializer(course, many=False)
+    pprint(serializer.data)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

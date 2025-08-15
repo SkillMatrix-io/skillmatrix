@@ -2,8 +2,9 @@
 # all urls have api/ prefix
 
 from django.urls import path
-from .views import EnrollInCourseView
+from .views import EnrollInCourseView, learn_course_view
 
 urlpatterns = [
-    path("enrollments/", EnrollInCourseView.as_view(), name="login"),
+    path("enrollments/", EnrollInCourseView.as_view(), name="enrollments"),
+    path("learn_course/<int:course_id>", learn_course_view, name="learn_course"),
 ]

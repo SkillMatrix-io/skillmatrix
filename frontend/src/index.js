@@ -7,6 +7,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import Auth from './pages/authentication/Auth';
 import CreateEditCourse from './pages/courses/CourseEdit';
 import Courses from './pages/courses/Courses';
+import LearnCourse from './pages/learning/LearnCourse';
 
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoutes';
@@ -42,6 +43,17 @@ root.render(
               }
             />
             <Route
+              path="/learning/:id"
+              element={
+                <SessionProvider>
+                  <ProtectedRoute>
+                    <LearnCourse />
+                  </ProtectedRoute>
+                </SessionProvider>
+              }
+            />
+
+            <Route
               path="/create_edit/:courseId"
               element={
                 <SessionProvider>
@@ -51,16 +63,6 @@ root.render(
                 </SessionProvider>
               }
             />
-            {/* <Route
-              path="/create_edit/new"
-              element={
-                <SessionProvider>
-                  <ProtectedRoute>
-                    <CreateEditCourse />
-                  </ProtectedRoute>
-                </SessionProvider>
-              }
-            /> */}
             <Route path="/auth/:mode" element={
               <Auth />
             } />

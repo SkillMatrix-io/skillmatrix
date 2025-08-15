@@ -16,6 +16,14 @@ class CourseCardSerializer(serializers.ModelSerializer):
         model = Course
         fields = ["id", "title", "price", "description", "cover_image", "instructor_username"]
 
+class CourseDialogSerializer(serializers.ModelSerializer):
+    instructor_username = serializers.CharField(source="instructor.username", read_only=True)
+
+    class Meta:
+        model = Course
+        fields = ["id", "title", "price", "description", "cover_image", "instructor_username"]
+        # exclude = []
+
 # Serializers convert Django models ↔ JSON and do field-level validation.
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, required=False)
@@ -55,7 +63,7 @@ class CourseSerializer(serializers.ModelSerializer):
         for lesson_data in lessons_data:
             file = lessons_data.pop('content_file',None)
             if file:
-                public_url = upload_lesson_file(file,lesson_data.get('title','untitles'))
+                public_url = upload_lesson_file(file,lesson_data.get('title','untitled'))
                 lesson_data['content_url'] = public_url
             Lesson.objects.update_or_create(
                 course = instace,

@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import ViewCourse from './ViewCourse';
+
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/`;
 
 export default function Courses() {
     const [courses, setCourses] = useState([]);
+    const [selectedCourse, setSelectedCourse] = useState(null);
 
     const storedUser = localStorage.getItem('user');
     const user = storedUser ? JSON.parse(storedUser) : null;
@@ -32,6 +35,19 @@ export default function Courses() {
     }, []);
     // const coursesString = JSON.stringify(courses)
 
+    async function handleView(courseId) {
+        try {
+            const res = await axios.get(`${baseUrl}courses/${courseId}`);
+            setSelectedCourse(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function closeView() {
+        setSelectedCourse(null);
+    }
+
     return (
         <>
             {courses.map((course) => (
@@ -41,15 +57,15 @@ export default function Courses() {
                     <p>Price: ₹{course.price}</p>
                     <p>Ratings: {course.ratings}</p>
                     {(!user || user?.role !== 'teacher') && (<button onClick={() => handleEnroll(course.id)}>Enroll</button>)}
+                    <button onClick={() => handleView(course.id)}>View</button>
                 </div>
             ))}
+            {selectedCourse && (
+                <ViewCourse
+                    course={selectedCourse}
+                    onClose={closeView}
+                />
+            )}
         </>
     );
 }
-// {/* <h4>Lessons:</h4>
-//     <ul>
-//       {course.lessons.map((lesson) => (
-//         <li key={lesson.id}>
-//           <strong>{lesson.title}</strong> ({lesson.content_type})
-//         </li>
-//       ))} */}
