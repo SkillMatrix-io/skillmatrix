@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/courses/`;
 
 export default function TeacherDashboard() {
     const [teacherCourses, setTeacherCourses] = useState([]);
     const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -43,21 +46,26 @@ export default function TeacherDashboard() {
 
     async function handleDelete(courseId) {
         try {
-            const response = await axios.delete(`${baseUrl}delete/${courseId}/`,{withCredentials:true});
+            await axios.delete(`${baseUrl}delete/${courseId}/`, { withCredentials: true });
 
             setTeacherCourses(prev => prev.filter(c => c.id !== courseId));
 
-            alert(response.data.status)
+            alert("course deleted")
         } catch (e) {
             console.error("Error deleting course", e);
         }
     }
+
+    function handleEdit(courseId) {
+        navigate(`/create_edit/${courseId}`);
+    }
+
     return (
         <div>
             <h1>Hi, {storedUser?.username} 👋</h1>
             <img src={`/avatar/${storedUser?.avatar}.png`} alt={`Avatar ${storedUser?.avatar}`} />
             <p>
-                <Link to="/create_edit">Create/Edit Course</Link>
+                <Link to="/create_edit/new">Create Course</Link>
             </p>
             <div>
                 <h3>Your courses</h3>
@@ -66,8 +74,9 @@ export default function TeacherDashboard() {
                         <b>
                             {course?.title}
                         </b>
+                        <button onClick={() => handleEdit(course.id)}>Edit Course</button>
                         <button onClick={() => handlePublish(course.id, course.is_published)}>{course?.is_published ? 'Unpublish Course' : 'Publish Course'}</button>
-                        <button onClick={()=> handleDelete(course.id)}>Delete Couses</button>
+                        <button onClick={() => handleDelete(course.id)}>Delete Couses</button>
                     </div>
                 ))}
             </div>

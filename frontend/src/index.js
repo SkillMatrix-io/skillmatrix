@@ -42,7 +42,7 @@ root.render(
               }
             />
             <Route
-              path="/create_edit"
+              path="/create_edit/:courseId"
               element={
                 <SessionProvider>
                   <ProtectedRoute>
@@ -51,6 +51,16 @@ root.render(
                 </SessionProvider>
               }
             />
+            {/* <Route
+              path="/create_edit/new"
+              element={
+                <SessionProvider>
+                  <ProtectedRoute>
+                    <CreateEditCourse />
+                  </ProtectedRoute>
+                </SessionProvider>
+              }
+            /> */}
             <Route path="/auth/:mode" element={
               <Auth />
             } />

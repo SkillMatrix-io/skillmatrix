@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import './CourseEdit.css'
+import { useParams } from 'react-router-dom';
 
 const isValidURL = (str) => {
     try {
@@ -24,7 +25,8 @@ const emptyLesson = {
     order: 1,
 };
 
-export default function CreateEditCourse({ courseId = null }) {
+export default function CreateEditCourse() {
+    const { courseId } = useParams();
     const [courseData, setCourseData] = useState({
         title: '',
         description: '',
@@ -33,6 +35,7 @@ export default function CreateEditCourse({ courseId = null }) {
         categories: [],
         cover_image: null,
     });
+
 
     const [lessons, setLessons] = useState([]);
     const [categories] = useState([
@@ -48,16 +51,22 @@ export default function CreateEditCourse({ courseId = null }) {
         { "id": 1, "name": "Web Development" }
     ]);
 
-    // For edit flow
     useEffect(() => {
-        if (courseId) {
-            axios.get(`${API_URL}private/${courseId}/`).then((res) => {
-                setCourseData({
-                    ...res.data,
-                    cover_image: null,
+        if (courseId && courseId !== "new") {
+            axios
+                .get(`${API_URL}create-edit/${courseId}/`,{withCredentials:true})
+                .then((res) => {
+                    setCourseData({
+                        ...res.data,
+                        cover_image: null, // reset image field
+                    });
+                    setLessons(
+                        (res.data.lessons || []).sort((a, b) => a.order - b.order) // sort by order
+                    );
+                })
+                .catch((err) => {
+                    console.error("Error fetching course details:", err);
                 });
-                setLessons((res.data.lessons || []).sort((a, b) => a.order - b.order));
-            });
         }
     }, [courseId]);
 
@@ -163,14 +172,14 @@ export default function CreateEditCourse({ courseId = null }) {
         formData.append("lessons", JSON.stringify(updatedLessons));
 
         try {
-            if (courseId) {
-                await axios.put(`${API_URL}create/${courseId}/`, formData, {
+            if (courseId && courseId !== "new") {
+                await axios.patch(`${API_URL}create-edit/${courseId}/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });
                 alert('Course updated!');
             } else {
-                await axios.post(`${API_URL}create/`, formData, {
+                await axios.post(`${API_URL}create-edit/`, formData, {
                     // await axios.post(`${API_URL}create/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,

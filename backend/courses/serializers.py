@@ -45,30 +45,30 @@ class CourseSerializer(serializers.ModelSerializer):
 
         return course
     
-    # def update(self,validated_data):
-    #     lessons_data = validated_data.pop('lessons',[])
-    #     categories_data = validated_data.pop('categories',[])
+    def update(self, instace, validated_data):
+        lessons_data = validated_data.get('lessons',[])
+        categories_data = validated_data.get('categories',None)
 
-    #     course = Course.objects.create(**validated_data)
-    #     course.categories.set(categories_data)
+        if categories_data:
+            instace.categories.set(categories_data)
 
-    #     for lesson_data in lesson_data:
-    #         Lesson.objects.create(course=course, **lessons_data)
-    #     return course
+        for lesson_data in lessons_data:
+            file = lessons_data.pop('content_file',None)
+            if file:
+                public_url = upload_lesson_file(file,lesson_data.get('title','untitles'))
+                lesson_data['content_url'] = public_url
+            Lesson.objects.update_or_create(
+                course = instace,
+                title = lesson_data.get('title'),
+                defaults=lesson_data
+            )
+        return super().update(instace,validated_data)
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name']
         
-# example payload 
-# {
-#   "title": "React Bootcamp",
-#   "description": "Best course ever",
-#   "price": 99,
-#   "categories": [1, 2, 3],
-#   "is_published": true
-# }
 # serializer = CourseSerializer(data=request.data)
 # serializer.is_valid() lets us validate all the fields placed in the course
 # good for forming many to many and such relations with other tables
