@@ -111,7 +111,7 @@ export function UserRegister({ role }) {
     const handleSelect = (id) => {
         setForm(prevForm => ({
             ...prevForm,
-            avatar: id
+            avatar: prevForm.avatar===id? null:id
         }));
     };
 

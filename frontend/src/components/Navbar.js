@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeProvider";
 import { Moon, Sun } from "lucide-react";
@@ -8,6 +9,8 @@ const baseURL = `${process.env.REACT_APP_API_URL}/api`;
 
 export default function Navbar() {
   // logout function dont remove. or take it along with the logout button 
+  const [menuOpen, setMenuOpen]=useState(false);
+  const toggleMenu = () => setMenuOpen(prev => !prev);
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -33,11 +36,11 @@ export default function Navbar() {
         </a>
         <Link className="navbar-brand text-primary fw-semibold" to={'/'}>SkillMatriX</Link>
 
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" onclick={toggleMenu}>
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <div className={`collapse navbar-collapse navbar-nav ${menuOpen ? "show" : ""}`} id="navbarSupportedContent">
           <ul className="navbar-nav me-auto ms-auto mb-2 mb-lg-0">
 
             {user &&

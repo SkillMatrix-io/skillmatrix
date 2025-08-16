@@ -1,75 +1,36 @@
-/* Light theme colors */
+/* Light mode improvements */
 body.light {
-  --navbar-bg: #f9fafb;
-  --navbar-text: #2c3e50;
-  --navbar-link: #3b82f6;
-  --navbar-link-hover: #4f46e5;
-  --navbar-btn-bg: #4f46e5;
-  --navbar-btn-text: #fff;
-  --navbar-border: #d1d5db;
+  --navbar-bg: #ffffff; /* pure white for clean background */
+  --navbar-text: #1a1a1a; /* very dark for readability */
+  --navbar-link: #2563eb; /* strong blue */
+  --navbar-link-hover: #1e40af; /* darker blue for hover */
+  --navbar-btn-bg: #2563eb; /* blue button bg */
+  --navbar-btn-text: #ffffff; /* white button text */
+  --navbar-border: #dde3eb; /* subtle border */
 }
 
-/* Dark theme colors */
+/* Dark mode improvements */
 body.dark {
-  --navbar-bg: #181820;
-  --navbar-text: #f1f1f1;
-  --navbar-link: #a5b4fc;
-  /* --navbar-link-hover: #e0e7ff; */
-  --navbar-btn-bg: #6366f1;
-  --navbar-btn-text: #fff;
-  --navbar-border: #374151;
+  --navbar-bg: #121212; /* dark background */
+  --navbar-text: #e4e4e7; /* light gray text */
+  --navbar-link: #93c5fd; /* lighter blue link */
+  --navbar-link-hover: #60a5fa; /* medium blue on hover */
+  --navbar-btn-bg: #2563eb; /* bright blue button bg */
+  --navbar-btn-text: #f0f0f0; /* near-white button text */
+  --navbar-border: #3f3f46; /* subtle dark border */
 }
 
-/* Navbar base */
+/* Apply navbar background and text colors */
 .navbar {
   background-color: var(--navbar-bg);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  padding: 0.5rem 1rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  z-index: 1000;
-}
-
-.navbar .navbar-brand {
-  font-weight: 700;
-  font-size: 1.4rem;
-  color: var(--navbar-link);
-  text-decoration: none;
-  transition: color 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.navbar .navbar-brand img {
-  max-height: 36px;
-  width: auto;
-  display: block;
-}
-
-/* Nav links container */
-.navbar-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.35rem;
-  margin-left: auto;
-  margin-right: 1rem;
-  flex-wrap: wrap;
-}
-
-.navbar-nav .nav-link {
-  font-size: 1.1rem;
   color: var(--navbar-text);
-  font-weight: 600;
-  text-decoration: none;
+  border-bottom: 1px solid var(--navbar-border);
+}
+
+/* Nav links */
+.navbar-nav .nav-link {
+  color: var(--navbar-text);
   transition: color 0.3s ease;
-  padding: 0.3rem 0.5rem;
-  border-radius: 6px;
-  white-space: nowrap;
 }
 
 .navbar-nav .nav-link:hover,
@@ -79,91 +40,32 @@ body.dark {
   outline: none;
 }
 
-/* Search bar form */
-.navbar form {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-right: 1rem;
-  flex-wrap: nowrap;
-  min-width: 180px;
-}
-
-.navbar input[type="search"] {
-  flex-grow: 1;
-  min-width: 0;
-  padding: 0.4rem 0.75rem;
-  border: 1.8px solid var(--navbar-border);
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: var(--navbar-bg);
-  color: var(--navbar-text);
-  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
-body.dark .navbar input[type="search"] {
-  background-color: #22223b;
-  color: var(--navbar-text);
-  border-color: var(--navbar-border);
-}
-
-.navbar input[type="search"]:focus {
-  border-color: var(--navbar-link);
-  outline: none;
-  box-shadow: 0 0 8px var(--navbar-link-hover);
-}
-
-/* Search button */
-.navbar button[type="submit"] {
+/* Register and Primary Buttons */
+nav .container-fluid a.nav-link > .btn.btn-primary {
   background-color: var(--navbar-btn-bg);
   color: var(--navbar-btn-text);
-  padding: 0.4rem 1rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  white-space: nowrap;
-}
-
-.navbar button[type="submit"]:hover,
-.navbar button[type="submit"]:focus {
-  background-color: var(--navbar-link-hover);
-  outline: none;
-}
-
-/* Buttons (register and theme toggle) */
-.btn-primary {
-  background-color: var(--navbar-btn-bg) !important;
-  color: var(--navbar-btn-text) !important;
   border: none;
   border-radius: 6px;
   padding: 0.4rem 1rem;
   font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover,
-.btn-primary:focus {
-  background-color: var(--navbar-link-hover) !important;
-  color: var(--navbar-btn-text) !important;
-  outline: none;
-}
-
-/* Logout button styling */
-.btn-logout {
-  background-color: transparent;
-  color: var(--navbar-link);
-  border: 1px solid var(--navbar-border);
-  border-radius: 6px;
-  font-weight: 600;
-  padding: 0.45rem 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-  margin-left: 0.5rem;
-  white-space: nowrap;
+}
+
+nav .container-fluid a.nav-link > .btn.btn-primary:hover,
+nav .container-fluid a.nav-link > .btn.btn-primary:focus {
+  background-color: var(--navbar-link-hover);
+  color: var(--navbar-btn-text);
+  outline: none;
+  text-decoration: none;
+}
+
+/* Logout Button */
+.btn-logout {
+  border: 1px solid var(--navbar-border);
+  color: var(--navbar-link);
+  background-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .btn-logout:hover,
@@ -172,78 +74,13 @@ body.dark .navbar input[type="search"] {
   color: var(--navbar-btn-text);
   outline: none;
 }
-
-/* Navbar toggler for mobile */
-.navbar-toggler {
-  border: none;
-  padding: 0.25rem 0.75rem;
-  cursor: pointer;
-  filter: drop-shadow(0 0 1px var(--navbar-link));
-  transition: filter 0.3s ease;
-  background: transparent;
-  display: none;
-}
-
 .navbar-toggler-icon {
-  width: 22px;
-  height: 22px;
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
+  filter: none;
 }
 
-/* Responsive adjustments */
-@media (max-width: 991px) {
-  .navbar-nav {
-    display: none;
-    width: 100%;
-    flex-direction: column;
-    background: var(--navbar-bg);
-    position: absolute;
-    top: 100%;
-    left: 0;
-    border-top: 1px solid var(--navbar-border);
-    padding: 0.5rem 0;
-    z-index: 1050;
-  }
-
-  .navbar-nav.show {
-    display: flex;
-  }
-
-  .navbar-toggler {
-    display: block;
-  }
-
-  /* Make form full width and centered */
-  .navbar form {
-    width: 100%;
-    margin: 0.5rem 0;
-  }
-
-  .navbar input[type="search"] {
-    width: 70%;
-  }
-
-  .navbar button[type="submit"] {
-    width: 25%;
-  }
-}
-
-@media (max-width: 575px) {
-  .navbar input[type="search"] {
-    width: 65%;
-  }
-
-  .navbar button[type="submit"] {
-    width: 30%;
-  }
-
-  .btn-primary,
-  .btn-logout {
-    width: 100%;
-    margin: 0.3rem 0;
-    text-align: center;
-  }
+/* Invert the toggler icon color in dark mode for visibility */
+body.dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23a5b4fc' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  filter: brightness(0.9);
 }
