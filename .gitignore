@@ -3,5 +3,3 @@ _frontend/
 node_modules/
 vineet*.md
 .env
-migrations/
-migrations
