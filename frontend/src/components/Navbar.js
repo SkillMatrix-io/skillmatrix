@@ -7,24 +7,23 @@ import './Navbar.css';
 const baseURL = `${process.env.REACT_APP_API_URL}/api`;
 
 export default function Navbar() {
-
   // logout function dont remove. or take it along with the logout button 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
-  
+
   const handleLogout = async () => {
     try {
       await axios.post(`${baseURL}/auth/logout/`, null, { withCredentials: true });
       localStorage.removeItem("user");
       navigate('/');
     } catch (e) {
-      console.log('Error logging out ' + e.response?.data?.message || e.message)
+      console.log('Error logging out ' + (e.response?.data?.message || e.message));
     }
-  }
+  };
   // logout function ends here
 
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <nav className="navbar navbar-expand-lg ">
@@ -60,19 +59,19 @@ export default function Navbar() {
               </li>}
           </ul>
 
-          <form className="d-flex" role="search">
-            <input className="form-control m-2" type="search" placeholder="Search" aria-label="Search" />
-            <button className="btn btn-outline-success m-2" type="submit">Search</button>
+          <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, margin: 0, }}>
+            <input type="search" placeholder="Search" aria-label="Search" style={{ flexGrow: 1, minWidth: 0, padding: '8px 12px', borderRadius: '6px 0 0 6px', border: '1px solid #ccc', borderRight: 'none', outline: 'none', boxSizing: 'border-box', margin: 0, }} />
+            <button type="submit" style={{ padding: '8px 16px', borderRadius: '0 6px 6px 0', border: '1px solid #ccc', borderLeft: 'none', backgroundColor: '#4f46e5', color: '#fff', cursor: 'pointer', whiteSpace: 'nowrap', margin: 0, }}>Search
+            </button>
           </form>
 
           {!user && <Link className="nav-link" to={'/auth/register'}><button className="btn btn-primary ms-2 fs-5 m-2">Register</button></Link>}
-          <button className="nav-link btn btn-primary m-2" onClick={toggleTheme}>{theme === 'dark' ? <Sun /> : <Moon />}</button>
+          <button className="nav-link btn btn-primary m-2" onClick={toggleTheme} aria-label="Toggle theme">{theme === 'dark' ? <Sun /> : <Moon />}</button>
 
           {/* logout button calling the logout function */}
-          {user && <button onClick={handleLogout}>logout</button>}
+          {user && <button className="btn btn-logout m-2" onClick={handleLogout}>Logout</button>}
         </div>
       </div>
     </nav>
-
   );
 }

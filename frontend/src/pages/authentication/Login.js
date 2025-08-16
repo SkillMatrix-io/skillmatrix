@@ -68,7 +68,7 @@ export function UserLogin({ role }) {
     };
     return (
         <>
-            <p>{role.charAt(0).toUpperCase() + role.slice(1)} Login here</p> {/* capitalize role lol */}
+            {/* <p>{role.charAt(0).toUpperCase() + role.slice(1)} Login here</p> capitalize role lol */}
             <h1>Fill your details to login</h1>
             <form onSubmit={submit}>
                 <label htmlFor="username">Username</label>
@@ -85,7 +85,7 @@ export function UserLogin({ role }) {
 }
 export function AdminLogin() {
     return (
-        <p>Are u an admin?
+        <p class="center">Are u an admin?
             Login here
         </p>
     )

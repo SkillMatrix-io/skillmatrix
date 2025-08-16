@@ -1,11 +1,17 @@
 export default function Footer() {
-    return (
-        <div>
-            <footer className="footer text-center m-0">
-                <p>@skillmatrix2025</p>
-                <a href="https://storyset.com/work">Work illustrations by Storyset</a>
-                <a href="https://freepik.com/">Avatar collections by freepik</a>
-            </footer>
+  return (
+    <footer className="footer-section text-center">
+      <div className="footer-content">
+        <p>© {new Date().getFullYear()} SkillMatriX</p>
+        <div className="footer-links">
+          <a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer">
+            Work illustrations by Storyset
+          </a>
+          <a href="https://freepik.com/" target="_blank" rel="noopener noreferrer">
+            Avatar collections by freepik
+          </a>
         </div>
-    );
+      </div>
+    </footer>
+  );
 }

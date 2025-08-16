@@ -117,7 +117,7 @@ export function UserRegister({ role }) {
 
     return (
         <>
-            <p>{role.charAt(0).toUpperCase() + role.slice(1)} Register here</p> {/* capitalize role lol */}
+            {/* <p>{role.charAt(0).toUpperCase() + role.slice(1)} Register here</p> capitalize role lol */}
             <h1>Fill your details to register</h1>
             {response && <p>response</p>}
             <form onSubmit={submit}>
