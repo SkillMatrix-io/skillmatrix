@@ -17,7 +17,7 @@ export default function Login() {
                         className={`switch-btn ${userRole === "student" ? "active" : ""}`}
                         onClick={() => setUserRole("student")}
                     >
-                        Student Login
+                        Student Login 
                     </button>
                     <button
                         className={`switch-btn ${userRole === "teacher" ? "active" : ""}`}
