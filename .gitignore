@@ -3,3 +3,5 @@ _frontend/
 node_modules/
 vineet*.md
 .env
+*.py[cod]
+__pycache__/git 
