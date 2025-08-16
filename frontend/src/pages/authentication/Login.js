@@ -85,7 +85,7 @@ export function UserLogin({ role }) {
 }
 export function AdminLogin() {
     return (
-        <p class="center">Are u an admin?
+        <p className="center">Are u an admin?
             Login here
         </p>
     )

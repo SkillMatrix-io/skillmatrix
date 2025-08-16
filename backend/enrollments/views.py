@@ -60,3 +60,16 @@ def learn_course_view(request,course_id):
         },
         "lessons": lesson_data
     })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def enrollment_list_view(request):
+    enrollments = (
+        Enrollment.objects
+        .filter(user = request.user)
+        .select_related("course")
+        .only("id","course","progress_percent")
+    )
+    serializer = EnrollmentDetailSerializer(enrollments,many=True)
+    print(serializer.data)
+    return Response(serializer.data)
