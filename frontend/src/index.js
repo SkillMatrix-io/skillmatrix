@@ -20,6 +20,7 @@ import Footer from './components/ui/Footer';
 import reportWebVitals from './reportWebVitals';
 import ThemeProvider from './context/ThemeProvider';
 import SessionProvider from './context/SessionContext';
+import Page404 from './pages/404';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -70,6 +71,8 @@ root.render(
             <Route path="/about" element={<About />} />
             <Route path="/devs" element={<Devs />} />
 
+            {/* 404 pages */}
+            <Route path='*' element={<Page404 />} />
           </Routes>
           <Footer />
           <ToastProvider />
