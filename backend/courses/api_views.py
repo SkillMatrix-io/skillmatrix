@@ -30,16 +30,16 @@ class CourseCreateAPIView(APIView):
     def post(self, request):
         # If 'lessons' came as a JSON string in formData, parse it manually
         lessons_data = json.loads(request.data.get('lessons', '[]'))
-        for i, lesson in enumerate(lessons_data):
+        for lesson in lessons_data:
             file_key = lesson.get('content_file')
-            # imp for files---->
-            if file_key in request.FILES:
+            if file_key and file_key in request.FILES:
+                # Replace with actual file object
                 lesson['content_file'] = request.FILES[file_key]
-            else:
-                lesson['content_file'] = None
+            # else: leave lesson['file_url'] as-is (if provided by frontend)
         
         def str_to_bool(value):
             return str(value).lower() in ['true', '1', 'yes']
+        
         try:
             price_val = float(request.data.get('price', 0))
         except ValueError:
@@ -82,14 +82,13 @@ class CourseUpdateAPIView(APIView):
 
     def put(self, request, pk):
         course = self.get_object(pk)
-        
+
         lessons_data = json.loads(request.data.get('lessons', '[]'))
         for lesson in lessons_data:
             file_key = lesson.get('content_file')
-            if file_key in request.FILES:
+            if file_key and file_key in request.FILES:
                 lesson['content_file'] = request.FILES[file_key]
-            else:
-                lesson['content_file'] = None
+            # else → leave `file_url` if provided, don’t overwrite with None ✅
 
         try:
             price_val = float(request.data.get('price', 0))
@@ -112,9 +111,20 @@ class CourseUpdateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, pk):
-        # Same as PUT but `partial=True`
         course = self.get_object(pk)
-        serializer = CourseSerializer(course, data=request.data, partial=True, context={'request': request})
+
+        lessons_data = json.loads(request.data.get('lessons', '[]'))
+        for lesson in lessons_data:
+            file_key = lesson.get('content_file')
+            if file_key and file_key in request.FILES:
+                lesson['content_file'] = request.FILES[file_key]
+            # else: let file_url flow through
+
+        data = request.data.copy()
+        if lessons_data:
+            data['lessons'] = lessons_data
+
+        serializer = CourseSerializer(course, data=data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

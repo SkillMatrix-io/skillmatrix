@@ -51,21 +51,22 @@ def instructor_course_list_view(request):
         Course.objects
         .filter(instructor=request.user)
         .select_related("instructor")
-        .only("id", "title", "price", "description", "instructor__username")
+        .only("id", "title", "price", "description", "instructor__username","is_published")
     )
     serializer = CourseCardSerializer(courses, many=True)
     return Response(serializer.data)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def publish_view(request,pk):
-    status = request.data.get("status")
-    if status == True:
-        Course.objects.filter(pk=pk).update(is_published=True)
-        return Response({"status":"Published"})
-    else:
-        Course.objects.filter(pk=pk).update(is_published=False)
-        return Response({"status":"Unpublished"})
+def publish_view(request, pk):
+    status_value = str(request.data.get("status")).lower() in ["true", "1", "yes"]
+
+    Course.objects.filter(pk=pk).update(is_published=status_value)
+
+    return Response({
+        "status": "Published" if status_value else "Unpublished",
+        "is_published": status_value
+    })
     
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])

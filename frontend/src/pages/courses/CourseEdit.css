@@ -4,9 +4,16 @@
     padding: 1rem;
     color: var(--color);
 }
+
 button {
     color: var(--bg);
     background-color: var(--color);
+    transition: all 200ms;
+}
+
+button:hover {
+    color: var(--color);
+    background-color: var(--bg);
 }
 
 .heading-2 {

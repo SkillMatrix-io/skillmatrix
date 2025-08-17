@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import './CourseEdit.css'
 import { useParams } from 'react-router-dom';
+import { showToast } from '../../components/functional/Toast';
 
 const isValidURL = (str) => {
     try {
@@ -163,8 +164,7 @@ export default function CreateEditCourse() {
                 copied.content_file = `file_${i}`;
             }
             if (copied.file_url && !isValidURL(copied.file_url)) {
-                toast.error(`Invalid video URL in lesson ${i + 1}`);
-                throw new Error(`Invalid video URL: ${copied.file_url}`);
+                showToast.error(`Invalid video URL in lesson ${i + 1}`);
             }
             return copied;
         });
@@ -177,25 +177,35 @@ export default function CreateEditCourse() {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });
-                alert('Course updated!');
+                showToast.success("Course update")
             } else {
                 await axios.post(`${API_URL}create-edit/`, formData, {
                     // await axios.post(`${API_URL}create/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });
-                alert('Course created!');
+                showToast.success("Course created")
             }
         } catch (err) {
             console.error(err);
-            alert('Something went wrong!');
+            showToast.error(err.response.data.lessons[0].content_file ? "Add a file":"Something went wrong")
         }
     };
 
     const clearLessonMedia = (index) => {
-        const updatedLessons = [...lessons];
-        updatedLessons[index].file_url = "";
-        updatedLessons[index].content_file = null;
+        const updatedLessons = lessons.map((lesson, i) =>
+            i === index
+                ? {
+                    ...lesson,              
+                    file_url: "",
+                    content_file: null,
+                    title: "",
+                    description: "",
+                    text_content: "",       
+                    content_type: "",       
+                }
+                : lesson
+        );
         setLessons(updatedLessons);
     };
 
@@ -349,7 +359,7 @@ export default function CreateEditCourse() {
                 </div>
 
                 <button type="submit" className="btn-primary">
-                    {courseId ? 'Update' : 'Create'} Course
+                    {courseId && courseId!=="new" ? 'Update' : 'Create'} Course
                 </button>
             </form>
         </div>

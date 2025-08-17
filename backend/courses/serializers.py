@@ -4,17 +4,27 @@ from .models import Course, Lesson, Category
 from .utils.supabase import upload_lesson_file
 
 class LessonSerializer(serializers.ModelSerializer):
-    content_file = serializers.FileField(write_only=True, required=False)
+    content_file = serializers.FileField(write_only=True, required=False, allow_null=True)
+    file_url = serializers.CharField(write_only=True, required=False, allow_null=True)
+
     class Meta:
         model = Lesson
         exclude = ['course']
+
+    def validate(self, attrs):
+        # Ensure at least one of the three sources exists
+        if not attrs.get('content_file') and not attrs.get('file_url') and not attrs.get('text_content'):
+            raise serializers.ValidationError(
+                "A lesson must have either a file, a URL, or text content."
+            )
+        return attrs
 
 class CourseCardSerializer(serializers.ModelSerializer):
     instructor_username = serializers.CharField(source="instructor.username", read_only=True)
 
     class Meta:
         model = Course
-        fields = ["id", "title", "price", "description", "cover_image", "instructor_username"]
+        fields = ["id", "title", "price", "description", "cover_image", "instructor_username","is_published"]
 
 class CourseDialogSerializer(serializers.ModelSerializer):
     instructor_username = serializers.CharField(source="instructor.username", read_only=True)
@@ -43,34 +53,45 @@ class CourseSerializer(serializers.ModelSerializer):
 
         course = Course.objects.create(instructor=instructor,**validated_data)
         course.categories.set(categories_data)
-
-        for lesson_data in lessons_data:
+        
+        for lesson_data in lessons_data:  
             file = lesson_data.pop('content_file', None)
-            if file:
-                public_url = upload_lesson_file(file,lesson_data.get('title','untitled'))
-                lesson_data['content_url'] = public_url
+            file_url = lesson_data.pop('file_url',None)
+
+            if file_url:
+                lesson_data['content_url'] = file_url
+            elif file:
+                    public_url = upload_lesson_file(file,lesson_data.get('title','untitled'))
+                    lesson_data['content_url'] = public_url
+
             Lesson.objects.create(course=course, **lesson_data)
 
         return course
     
-    def update(self, instace, validated_data):
+    def update(self, instance, validated_data):
         lessons_data = validated_data.get('lessons',[])
         categories_data = validated_data.get('categories',None)
 
         if categories_data:
-            instace.categories.set(categories_data)
+            instance.categories.set(categories_data)
 
         for lesson_data in lessons_data:
             file = lessons_data.pop('content_file',None)
-            if file:
-                public_url = upload_lesson_file(file,lesson_data.get('title','untitled'))
-                lesson_data['content_url'] = public_url
+            file_url = lesson_data.pop('file_url')
+
+            if file_url:
+                lesson_data['public_url'] = file_url
+            elif file:
+                    public_url = upload_lesson_file(file,lesson_data.get('title','untitled'))
+                    lesson_data['content_url'] = public_url
+
             Lesson.objects.update_or_create(
-                course = instace,
+                course = instance,
                 title = lesson_data.get('title'),
                 defaults=lesson_data
             )
-        return super().update(instace,validated_data)
+
+        return super().update(instance,validated_data)
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

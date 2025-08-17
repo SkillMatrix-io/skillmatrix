@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import axios from 'axios'
 import './Login.css'
 import { useNavigate } from 'react-router-dom'
+import { showToast } from "../../components/functional/Toast"
 
 const baseURL = `${process.env.REACT_APP_API_URL}/api`;
 
@@ -38,6 +39,7 @@ export default function Register() {
 export function UserRegister({ role }) {
     const [response, setResponse] = useState("")
     const navigate = useNavigate()
+    const [error, setError] = useState(null);
 
     // avatar selection
     const [avatars, setAvatars] = useState([]);
@@ -75,8 +77,6 @@ export function UserRegister({ role }) {
             setPasswordErrors(errors);
         }
     }
-
-    const [error, setError] = useState(null);
     const submit = async (e) => {
         e.preventDefault(); // prevent form reload
         try {
@@ -93,9 +93,9 @@ export function UserRegister({ role }) {
             // If you want to store session info or use HttpOnly cookies for JWT, you must enable withCredentials.
 
         } catch (error) {
-            setError(error.response?.data?.message || "Unknown error - register")
-            console.error("Registration failed", error.response?.data);
-            // Show error to user
+            const data = error.response?.data;
+            const msg = data?.email?.[0] || data?.username?.[0] || data?.password?.[0] || "Unknown error";
+            setError(msg)
         }
     };
 
@@ -111,9 +111,15 @@ export function UserRegister({ role }) {
     const handleSelect = (id) => {
         setForm(prevForm => ({
             ...prevForm,
-            avatar: prevForm.avatar===id? null:id
+            avatar: prevForm.avatar === id ? null : id
         }));
     };
+
+    useEffect(() => {
+        if (error) {
+            showToast.error(error);
+        }
+    }, [error]);
 
     return (
         <>

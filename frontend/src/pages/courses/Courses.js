@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAsyncError, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import ViewCourse from './ViewCourse';
+import StarRating from "../../components/functional/StarRatings";
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/`;
 
@@ -64,7 +65,7 @@ export default function Courses() {
     }
 
     return (
-        <>
+        <div style={{maxWidth:"80%",margin:"auto",marginTop:"15px"}}>
             {courses.map((course) => {
                 const isEnrolled = enrollments?.some(
                     (enrollment) => enrollment.course === course.id
@@ -74,19 +75,21 @@ export default function Courses() {
                         <h2>{course.title}</h2>
                         <p>{course.description}</p>
                         <p>Price: ₹{course.price}</p>
-                        <p>Ratings: {course.ratings}</p>
-                        {(!user || user?.role !== "teacher") && (
-                            isEnrolled ? (
-                                <button onClick={() => navigate(`/learning/${course.id}`)}>
-                                    Open
-                                </button>
-                            ) : (
-                                <button onClick={() => handleEnroll(course.id)}>
-                                    Enroll
-                                </button>
-                            )
-                        )}
-                        <button onClick={() => handleView(course.id)}>View</button>
+                        <div style={{display:"flex", alignItems:"center", gap:"10px"}}><span style={{position:"relative",top:"2px"}}>Ratings: </span><StarRating rating={course.ratings || 0}/></div>
+                        <div style={{display:"flex",gap:"10px"}}>
+                            {(!user || user?.role !== "teacher") && (
+                                isEnrolled ? (
+                                    <button onClick={() => navigate(`/learning/${course.id}`)}>
+                                        Open
+                                    </button>
+                                ) : (
+                                    <button onClick={() => handleEnroll(course.id)}>
+                                        Enroll
+                                    </button>
+                                )
+                            )}
+                            <button onClick={() => handleView(course.id)}>View</button>
+                        </div>
                     </div>)
             })}
             {selectedCourse && (
@@ -95,6 +98,6 @@ export default function Courses() {
                     onClose={closeView}
                 />
             )}
-        </>
+        </div>
     );
 }

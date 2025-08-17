@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import StarRating from "../../components/StarRatings";
+import StarRating from "../../components/functional/StarRatings";
 
 export default function ViewCourse({ course, onClose }) {
     const overlayRef = useRef(null);

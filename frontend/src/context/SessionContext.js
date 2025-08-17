@@ -1,6 +1,7 @@
-import { createContext, useState, useEffect, useContext, useRef } from "react";
-import { toast } from 'react-toastify';
+import { createContext, useState, useEffect, useContext } from "react";
 import 'react-toastify/dist/ReactToastify.css';
+import { showToast } from "../components/functional/Toast";
+import { toast } from "react-toastify";
 
 const SessionContext = createContext();
 const baseURL = `${process.env.REACT_APP_API_URL}/api`;
@@ -10,8 +11,6 @@ export const useSession = () => useContext(SessionContext)
 export default function SessionProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    const toastIdRef = useRef(null); 
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -25,7 +24,7 @@ export default function SessionProvider({ children }) {
 
         fetch(`${baseURL}/session`, { credentials: 'include' })
             .then(res => res.ok ? res.json() : Promise.reject())
-            .then(data => setUser(data))
+            .then(data => setUser(data) && localStorage.setItem("user",data))
             .catch(() => {
                 setUser(null)
                 localStorage.setItem("user",null)
@@ -37,11 +36,12 @@ export default function SessionProvider({ children }) {
     }, []);
 
     useEffect(() => {
-        if (loading && !toast.isActive(toastIdRef.current)) {
-            toastIdRef.current = toast.loading('Loading...');
-        } else if (!loading && toastIdRef.current) {
-            toast.dismiss(toastIdRef.current);
-            toastIdRef.current = null;
+        if (loading) {
+            showToast.loading("Loading session...");
+        } else {
+            setTimeout(()=>{
+                toast.dismiss("global-loader");
+            },1000)
         }
     }, [loading]);
 

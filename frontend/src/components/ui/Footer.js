@@ -6,7 +6,7 @@ export default function Footer() {
         <div className="footer-links">
           <a href="https://storyset.com/work" target="_blank" rel="noopener noreferrer">
             Work illustrations by Storyset
-          </a>
+          </a> <br />
           <a href="https://freepik.com/" target="_blank" rel="noopener noreferrer">
             Avatar collections by freepik
           </a>
