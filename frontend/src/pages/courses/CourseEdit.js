@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import './CourseEdit.css'
+import './CourseEdit.css';
 import { useParams } from 'react-router-dom';
 
 const isValidURL = (str) => {
@@ -35,89 +35,95 @@ export default function CreateEditCourse() {
         categories: [],
         cover_image: null,
     });
-
-
     const [lessons, setLessons] = useState([]);
     const [categories] = useState([
-        { "id": 3, "name": "Artificial Intelligence" },
-        { "id": 8, "name": "Blockchain" },
-        { "id": 6, "name": "Cloud Computing" },
-        { "id": 7, "name": "Cybersecurity" },
-        { "id": 2, "name": "Data Science" },
-        { "id": 10, "name": "Game Development" },
-        { "id": 4, "name": "Machine Learning" },
-        { "id": 5, "name": "Mobile App Development" },
-        { "id": 9, "name": "UI/UX Design" },
-        { "id": 1, "name": "Web Development" }
+        { id: 3, name: "Artificial Intelligence" },
+        { id: 8, name: "Blockchain" },
+        { id: 6, name: "Cloud Computing" },
+        { id: 7, name: "Cybersecurity" },
+        { id: 2, name: "Data Science" },
+        { id: 10, name: "Game Development" },
+        { id: 4, name: "Machine Learning" },
+        { id: 5, name: "Mobile App Development" },
+        { id: 9, name: "UI/UX Design" },
+        { id: 1, name: "Web Development" }
     ]);
 
     useEffect(() => {
         if (courseId && courseId !== "new") {
-            axios
-                .get(`${API_URL}create-edit/${courseId}/`,{withCredentials:true})
-                .then((res) => {
+            axios.get(`${API_URL}create-edit/${courseId}/`, { withCredentials: true })
+                .then(res => {
                     setCourseData({
                         ...res.data,
-                        cover_image: null, // reset image field
+                        cover_image: null, // reset image
                     });
-                    setLessons(
-                        (res.data.lessons || []).sort((a, b) => a.order - b.order) // sort by order
-                    );
+                    setLessons((res.data.lessons || []).sort((a, b) => a.order - b.order));
                 })
-                .catch((err) => {
+                .catch(err => {
                     console.error("Error fetching course details:", err);
                 });
         }
     }, [courseId]);
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value, type, checked, files } = e.target;
         if (type === 'checkbox' && name === 'is_published') {
-            setCourseData((prev) => ({ ...prev, is_published: checked }));
+            setCourseData(prev => ({ ...prev, is_published: checked }));
         } else if (type === 'file' && name === 'cover_image') {
-            setCourseData((prev) => ({ ...prev, cover_image: e.target.files[0] }));
+            setCourseData(prev => ({ ...prev, cover_image: files[0] }));
         } else {
-            setCourseData((prev) => ({ ...prev, [name]: value }));
+            setCourseData(prev => ({ ...prev, [name]: value }));
         }
     };
 
-    const handleLessonChange = async (index, event) => {
-        const { name, value, files, type } = event.target;
-        const updatedLessons = [...lessons];
-        const lesson = { ...updatedLessons[index] };
+    const handleLessonChange = (index, e) => {
+        const { name, value, files, type } = e.target;
+        setLessons(prev => {
+            const updated = [...prev];
+            const lesson = { ...updated[index] };
 
-        // uploads file
-        if (name === "content_file" && files?.[0]) {
-            if (files[0].size > 25 * 1024 * 1024) { // 25MB
-                toast.error("File too large!");
-                return;
+            if (name === "content_file" && files?.[0]) {
+                if (files.size > 25 * 1024 * 1024) {
+                    toast.error("File too large!");
+                    return prev;
+                }
+                lesson.content_file = files;
+                lesson.file_url = "";
+            } else if (name === "file_url") {
+                lesson.file_url = value;
+                lesson.content_file = null;
+            } else {
+                lesson[name] = type === "checkbox" ? e.target.checked : value;
             }
-            lesson.content_file = files[0];
-            lesson.file_url = ""; // clear existing URL if uploading a new file
-        } else if (name === "file_url") {
-            lesson.file_url = value;
-            lesson.content_file = null; // clear file if URL entered
-        } else {
-            lesson[name] = type === "checkbox" ? event.target.checked : value;
-        }
 
-        updatedLessons[index] = lesson;
-        setLessons(updatedLessons);
+            updated[index] = lesson;
+            return updated;
+        });
     };
 
     const addLesson = () => {
-        setLessons((prev) => [...prev,
-        { ...emptyLesson, order: lessons.length + 1 }]);
+        setLessons(prev => [...prev, { ...emptyLesson, order: prev.length + 1 }]);
     };
 
     const removeLesson = (index) => {
-        const newLessons = [...lessons];
-        newLessons.splice(index, 1);
-        setLessons(newLessons.map((l, i) => ({ ...l, order: i + 1 })));
+        setLessons(prev => {
+            const updated = [...prev];
+            updated.splice(index, 1);
+            return updated.map((lesson, i) => ({ ...lesson, order: i + 1 }));
+        });
+    };
+
+    const clearLessonMedia = (index) => {
+        setLessons(prev => {
+            const updated = [...prev];
+            updated[index].file_url = "";
+            updated[index].content_file = null;
+            return updated;
+        });
     };
 
     const handleCategorySelect = (catId) => {
-        setCourseData((prev) => {
+        setCourseData(prev => {
             const selected = new Set(prev.categories);
             selected.has(catId) ? selected.delete(catId) : selected.add(catId);
             return { ...prev, categories: Array.from(selected) };
@@ -125,7 +131,6 @@ export default function CreateEditCourse() {
     };
 
     const handleSubmit = async (e) => {
-        // on chatgpt i realised parseing formdata wont let us do things like lesson[0][title] etc to the django react framework soooooo sending data in json and files in formData hehe.
         e.preventDefault();
 
         if (lessons.length === 0 && courseData.is_published) {
@@ -135,38 +140,24 @@ export default function CreateEditCourse() {
 
         const formData = new FormData();
 
-        //course fields
         formData.append("title", String(courseData.title));
         formData.append("description", String(courseData.description));
         formData.append("price", Number(courseData.price));
         formData.append("is_published", courseData.is_published);
 
-        // categries
-        (courseData.categories || []).forEach((catId) => {
-            formData.append('categories', catId);
-        });
+        (courseData.categories || []).forEach(catId => formData.append('categories', catId));
 
-        // Object.entries(courseData).forEach(([key, value]) => {
-        //     if (key === 'categories') {
-        //         value.forEach((catId) => formData.append('categories', catId));
-        //     } else if (value !== null) {
-        //         formData.append(key, value);
-        //     }
-        // });
-
-        // Lesson
         const updatedLessons = lessons.map((lesson, i) => {
-            const copied = { ...lesson };
-
-            if (copied.content_file) {
-                formData.append(`file_${i}`, copied.content_file);
-                copied.content_file = `file_${i}`;
+            const copy = { ...lesson };
+            if (copy.content_file) {
+                formData.append(`file_${i}`, copy.content_file);
+                copy.content_file = `file_${i}`;
             }
-            if (copied.file_url && !isValidURL(copied.file_url)) {
+            if (copy.file_url && !isValidURL(copy.file_url)) {
                 toast.error(`Invalid video URL in lesson ${i + 1}`);
-                throw new Error(`Invalid video URL: ${copied.file_url}`);
+                throw new Error(`Invalid video URL: ${copy.file_url}`);
             }
-            return copied;
+            return copy;
         });
 
         formData.append("lessons", JSON.stringify(updatedLessons));
@@ -180,7 +171,6 @@ export default function CreateEditCourse() {
                 alert('Course updated!');
             } else {
                 await axios.post(`${API_URL}create-edit/`, formData, {
-                    // await axios.post(`${API_URL}create/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });
@@ -192,43 +182,58 @@ export default function CreateEditCourse() {
         }
     };
 
-    const clearLessonMedia = (index) => {
-        const updatedLessons = [...lessons];
-        updatedLessons[index].file_url = "";
-        updatedLessons[index].content_file = null;
-        setLessons(updatedLessons);
-    };
-
     return (
-        <div className="container">
+        <div className="container course-edit-container">
             <h2 className="heading-2">{courseId ? 'Edit' : 'Create'} Course</h2>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <label>Title</label>
-                <input name="title"
+                <input
+                    name="title"
                     value={courseData.title}
-                    onChange={handleChange} placeholder="Title" className="input" required />
+                    onChange={handleChange}
+                    placeholder="Title"
+                    className="input"
+                    required
+                />
 
                 <label>Description</label>
-                <textarea name="description"
+                <textarea
+                    name="description"
                     value={courseData.description}
-                    onChange={handleChange} placeholder="Description" className="textarea" required></textarea>
+                    onChange={handleChange}
+                    placeholder="Description"
+                    className="textarea"
+                    required
+                />
 
                 <label>Price</label>
-                <input type="number" name="price"
+                <input
+                    type="number"
+                    name="price"
                     value={courseData.price}
-                    onChange={handleChange} className="input" placeholder="Price"
+                    onChange={handleChange}
+                    className="input"
+                    placeholder="Price"
                     min={0}
-                    max={9999} />
-                {courseData.price < 0 || courseData.price > 9999 ? (
+                    max={9999}
+                />
+                {(courseData.price < 0 || courseData.price > 9999) && (
                     <p className="warning">Price must be between ₹0 and ₹9999.</p>
-                ) : null}
+                )}
 
-                <input type="file" name="cover_image" onChange={handleChange} className="file-input" />
+                <input
+                    type="file"
+                    name="cover_image"
+                    onChange={handleChange}
+                    className="file-input"
+                />
+
                 <label className="checkbox-label">
-                    <input type="checkbox" name="is_published"
+                    <input
+                        type="checkbox"
+                        name="is_published"
                         checked={courseData.is_published}
                         onChange={handleChange}
-                        // doesnt let publish evne with lesson == 1 but emptty fields
                         disabled={
                             lessons.length === 0 ||
                             lessons.some(lesson => {
@@ -240,11 +245,11 @@ export default function CreateEditCourse() {
                         }
                     /> Published
                 </label>
-                <p>Add atleast one lesson to publish</p>
+                <p>Add at least one lesson to publish</p>
 
                 <div className="category-group">
                     <p className="label-bold">Categories:</p>
-                    {categories.map((cat) => (
+                    {categories.map(cat => (
                         <label key={cat.id} className="checkbox-label">
                             <input
                                 type="checkbox"
@@ -264,32 +269,34 @@ export default function CreateEditCourse() {
                             <input
                                 name="title"
                                 value={lesson.title}
-                                onChange={(e) => handleLessonChange(index, e)}
+                                onChange={e => handleLessonChange(index, e)}
                                 placeholder="Lesson Title"
                                 className="input"
                             />
 
-
-
                             <label>Lesson Description</label>
-                            <textarea name="description"
+                            <textarea
+                                name="description"
                                 value={lesson.description}
-                                onChange={(e) => handleLessonChange(index, e)} placeholder="Lesson Description" className="textarea"></textarea>
+                                onChange={e => handleLessonChange(index, e)}
+                                placeholder="Lesson Description"
+                                className="textarea"
+                            />
 
                             <label>Text Content</label>
                             <textarea
                                 name="text_content"
                                 value={lesson.text_content || ""}
-                                onChange={(e) => handleLessonChange(index, e)}
-                                className="textarea"
+                                onChange={e => handleLessonChange(index, e)}
                                 placeholder="Enter lesson text here (markdown supported)"
-                            ></textarea>
+                                className="textarea"
+                            />
 
                             <label>Content Type</label>
                             <select
                                 name="content_type"
                                 value={lesson.content_type}
-                                onChange={(e) => handleLessonChange(index, e)}
+                                onChange={e => handleLessonChange(index, e)}
                                 className="input"
                             >
                                 <option value="">-- Select Type --</option>
@@ -297,14 +304,13 @@ export default function CreateEditCourse() {
                                 <option value="pdf">PDF</option>
                             </select>
 
-                            {/* Conditional rendering based on type */}
-                            {lesson.content_type === "video" || lesson.content_type === "pdf" ? (
+                            {(lesson.content_type === "video" || lesson.content_type === "pdf") && (
                                 <>
                                     <label>Upload File</label>
                                     <input
                                         type="file"
                                         name="content_file"
-                                        onChange={(e) => handleLessonChange(index, e)}
+                                        onChange={e => handleLessonChange(index, e)}
                                         className="file-input"
                                         disabled={!!lesson.file_url}
                                     />
@@ -313,26 +319,16 @@ export default function CreateEditCourse() {
                                     <input
                                         name="file_url"
                                         value={lesson.file_url}
-                                        onChange={(e) => handleLessonChange(index, e)}
+                                        onChange={e => handleLessonChange(index, e)}
                                         placeholder="Video or PDF URL"
                                         className="input"
-                                        disabled={!!lesson.content_file} />
-                                    <button type="button" onClick={() => clearLessonMedia(index)}>Clear?</button>
+                                        disabled={!!lesson.content_file}
+                                    />
+                                    <button type="button" onClick={() => clearLessonMedia(index)}>
+                                        Clear?
+                                    </button>
                                 </>
-                            ) : null}
-
-                            {/* {lesson.content_type === "text" ? (
-                                <>
-                                    <label>Text Content</label>
-                                    <textarea
-                                        name="text_content"
-                                        value={lesson.text_content || ""}
-                                        onChange={(e) => handleLessonChange(index, e)}
-                                        className="textarea"
-                                        placeholder="Enter lesson text here (markdown supported)"
-                                    ></textarea>
-                                </>
-                            ) : null} */}
+                            )}
 
                             <button
                                 type="button"

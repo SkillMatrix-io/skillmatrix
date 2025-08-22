@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import StarRating from "../../components/StarRatings";
+import './Course.css';
 
 export default function ViewCourse({ course, onClose }) {
     const overlayRef = useRef(null);
 
-    // Close if clicked outside
     useEffect(() => {
         function handleClickOutside(e) {
             if (overlayRef.current && e.target === overlayRef.current) {
@@ -16,37 +16,14 @@ export default function ViewCourse({ course, onClose }) {
     }, [onClose]);
 
     return (
-        <div
-            ref={overlayRef}
-            style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100vh",
-                backgroundColor: "rgba(0,0,0,0.5)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 9999
-            }}
-        >
-            <div style={{
-                background: "white",
-                padding: "2rem",
-                borderRadius: "8px",
-                maxWidth: "600px",
-                width: "90%",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
-            }}>
-                <h2>{course.title}</h2>
-                <p>{course.description}</p>
-                <p>Price: ₹{course.price}</p>
-                <div>Ratings: <StarRating rating={course.ratings || 0} /></div>
-                
-                <button onClick={onClose}>Close</button>
+        <div ref={overlayRef} className="vc-overlay">
+            <div className="vc-modal">
+                <h2 className="vc-title">{course.title}</h2>
+                <p className="vc-description">{course.description}</p>
+                <p className="vc-price">Price: ₹{course.price}</p>
+                <div className="vc-ratings">Ratings: <StarRating rating={course.ratings || 0} /></div>
+                <button className="vc-close-btn" onClick={onClose}>Close</button>
             </div>
         </div>
     );
 }
-

@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAsyncError, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 import ViewCourse from './ViewCourse';
+import './Course.css';
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/`;
 
 export default function Courses() {
     const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
-    const [enrollments, setEnrollments] = useState(null)
+    const [enrollments, setEnrollments] = useState(null);
 
     const storedUser = localStorage.getItem('user');
     const user = storedUser ? JSON.parse(storedUser) : null;
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     async function handleEnroll(courseId) {
         if (!user) {
-            navigate('/auth/register')
+            navigate('/auth/register');
         } else {
             const response = await axios.post(`${baseUrl}enrollments/`,
                 {
                     course: courseId,
                     access_type: 'normal',
                 }, { withCredentials: true }
-            )
-            alert(response.data.message)
-            navigate(`/learning/${courseId}`)
+            );
+            alert(response.data.message);
+            navigate(`/learning/${courseId}`);
         }
     }
 
@@ -35,20 +35,18 @@ export default function Courses() {
             .then(res => setCourses(res.data))
             .catch(err => console.error(err));
     }, []);
-    // const coursesString = JSON.stringify(courses)
 
     useEffect(() => {
         (async function getEnrollments() {
             try {
-                const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true })
-                setEnrollments(res.data)
+                const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true });
+                setEnrollments(res.data);
             }
             catch (e) {
-                console.log("can't fetch enroolements", e.data)
+                console.log("can't fetch enrollments", e.data);
             }
-        })()
-    }, [])
-
+        })();
+    }, []);
 
     async function handleView(courseId) {
         try {
@@ -64,30 +62,29 @@ export default function Courses() {
     }
 
     return (
-        <>
-            {courses.map((course) => {
-                const isEnrolled = enrollments?.some(
-                    (enrollment) => enrollment.course === course.id
-                );
+        <div className="courses-container">
+            {courses.map(course => {
+                const isEnrolled = enrollments?.some(enrollment => enrollment.course === course.id);
                 return (
-                    <div key={course.id} style={{ border: "1px solid #ccc", marginBottom: "1rem", padding: "1rem" }}>
-                        <h2>{course.title}</h2>
-                        <p>{course.description}</p>
-                        <p>Price: ₹{course.price}</p>
-                        <p>Ratings: {course.ratings}</p>
+                    <div key={course.id} className="course-card">
+                        <h2 className="course-title">{course.title}</h2>
+                        <p className="course-description">{course.description}</p>
+                        <p className="course-price">Price: ₹{course.price}</p>
+                        <p className="course-ratings">Ratings: {course.ratings}</p>
                         {(!user || user?.role !== "teacher") && (
                             isEnrolled ? (
-                                <button onClick={() => navigate(`/learning/${course.id}`)}>
+                                <button className="btn btn-primary course-btn" onClick={() => navigate(`/learning/${course.id}`)}>
                                     Open
                                 </button>
                             ) : (
-                                <button onClick={() => handleEnroll(course.id)}>
+                                <button className="btn btn-primary course-btn" onClick={() => handleEnroll(course.id)}>
                                     Enroll
                                 </button>
                             )
                         )}
-                        <button onClick={() => handleView(course.id)}>View</button>
-                    </div>)
+                        <button className="btn btn-secondary course-btn" onClick={() => handleView(course.id)}>View</button>
+                    </div>
+                );
             })}
             {selectedCourse && (
                 <ViewCourse
@@ -95,6 +92,6 @@ export default function Courses() {
                     onClose={closeView}
                 />
             )}
-        </>
+        </div>
     );
 }

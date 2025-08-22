@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import './TeacherDashboard.css';
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/courses/`;
 
 export default function TeacherDashboard() {
     const [teacherCourses, setTeacherCourses] = useState([]);
     const storedUser = JSON.parse(localStorage.getItem("user"));
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,34 +23,31 @@ export default function TeacherDashboard() {
         };
 
         fetchCourses();
-    }, []); // fetch only once on mount
-
+    }, []);
 
     async function handlePublish(courseId, status) {
         try {
             const response = await axios.post(`${baseUrl}publishing/${courseId}/`, {
                 status: status
-            }, { withCredentials: true })
+            }, { withCredentials: true });
             setTeacherCourses(prevCourses =>
                 prevCourses.map(course =>
                     course.id === courseId
-                        ? { ...course, is_published: true }
+                        ? { ...course, is_published: status }
                         : course
                 )
             );
-            alert(response.data.status)
+            alert(response.data.status);
         } catch (e) {
-            console.error("error in changing publish status", e)
+            console.error("error in changing publish status", e);
         }
     }
 
     async function handleDelete(courseId) {
         try {
             await axios.delete(`${baseUrl}delete/${courseId}/`, { withCredentials: true });
-
             setTeacherCourses(prev => prev.filter(c => c.id !== courseId));
-
-            alert("course deleted")
+            alert("course deleted");
         } catch (e) {
             console.error("Error deleting course", e);
         }
@@ -61,24 +58,30 @@ export default function TeacherDashboard() {
     }
 
     return (
-        <div>
-            <h1>Hi, {storedUser?.username} 👋</h1>
-            <img src={`/avatar/${storedUser?.avatar}.png`} alt={`Avatar ${storedUser?.avatar}`} />
-            <p>
-                <Link to="/create_edit/new">Create Course</Link>
-            </p>
+        <div className="teacher-dashboard">
+            <div className="td-header">
+                <h1>Hi, {storedUser?.username} 👋</h1>
+                <img className="td-avatar" src={`/avatar/${storedUser?.avatar}.png`} alt={`Avatar ${storedUser?.avatar}`} />
+                <p>
+                    <Link className="td-create-link" to="/create_edit/new">+ Create Course</Link>
+                </p>
+            </div>
             <div>
                 <h3>Your courses</h3>
-                {teacherCourses.map((course, key) => (
-                    <div key={key}>
-                        <b>
-                            {course?.title}
-                        </b>
-                        <button onClick={() => handleEdit(course.id)}>Edit Course</button>
-                        <button onClick={() => handlePublish(course.id, course.is_published)}>{course?.is_published ? 'Unpublish Course' : 'Publish Course'}</button>
-                        <button onClick={() => handleDelete(course.id)}>Delete Couses</button>
-                    </div>
-                ))}
+                <div className="td-course-list">
+                    {teacherCourses.map((course) => (
+                        <div className="td-course-card" key={course.id}>
+                            <span className="td-course-title">{course.title}</span>
+                            <div className="td-course-actions">
+                                <button className="td-btn td-btn-edit" onClick={() => handleEdit(course.id)}>Edit</button>
+                                <button className="td-btn td-btn-publish" onClick={() => handlePublish(course.id, !course.is_published)}>
+                                    {course.is_published ? 'Unpublish' : 'Publish'}
+                                </button>
+                                <button className="td-btn td-btn-delete" onClick={() => handleDelete(course.id)}>Delete</button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
