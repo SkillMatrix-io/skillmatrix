@@ -25,7 +25,9 @@ def register_view(request):
         response = Response({
             'message':'Registration successful',
             'role':user.role,
-            'username': user.username
+            'username': user.username,
+            'id':user.id,
+            'avatar':user.avatar,
         }, status=status.HTTP_201_CREATED)
         
         response.set_cookie('access',str(refresh.access_token), httponly=True, samesite='Lax',max_age=60*60*24) #important - storing login token in http only cookies - not on local machine
@@ -58,7 +60,9 @@ def login_view(request):
         response = Response({
             'message': 'Login successful',
             'role': user.role,
-            'username': user.username
+            'username': user.username,
+            'id':user.id,
+            'avatar':user.avatar,
         }, status=status.HTTP_200_OK)
 
         response.set_cookie('access', 
@@ -97,6 +101,17 @@ def get_user_by_id(request, pk):
     
     serializer = RegisterSerializer(user)  # or a different serializer for reading
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_by_username(request,username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({'error':'User not found'},status=404)
+    seralizer = RegisterSerializer(user)
+
+    return Response(seralizer.data)
 
 
 # backend sendds two cookies - jwt token one is session - 24hrs ago 

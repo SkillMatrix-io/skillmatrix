@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Routes, Route, BrowserRouter, useNavigate } from 'react-router-dom';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import './index.css';
 
 import App from './App';
@@ -12,7 +12,7 @@ import LearnCourse from './pages/learning/LearnCourse';
 import About from './pages/About';
 import Devs from './pages/Devs';
 
-import ProtectedRoute from './components/functional/ProtectedRoutes';
+import ProtectedRoute, { PublicRoutes } from './components/functional/ProtectedRoutes';
 import ToastProvider from './components/functional/Toast';
 import Navbar from './components/ui/Navbar';
 import Footer from './components/ui/Footer';
@@ -21,6 +21,7 @@ import reportWebVitals from './reportWebVitals';
 import ThemeProvider from './context/ThemeProvider';
 import SessionProvider from './context/SessionContext';
 import Page404 from './pages/404';
+import ProfileView from './pages/misc/ProfileView';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -66,11 +67,13 @@ root.render(
               }
             />
             <Route path="/auth/:mode" element={
-              <Auth />
+              <PublicRoutes>
+                <Auth />
+              </PublicRoutes>
             } />
             <Route path="/about" element={<About />} />
             <Route path="/devs" element={<Devs />} />
-
+            <Route path='/profile/:username' element={<ProfileView />} />
             {/* 404 pages */}
             <Route path='*' element={<Page404 />} />
           </Routes>

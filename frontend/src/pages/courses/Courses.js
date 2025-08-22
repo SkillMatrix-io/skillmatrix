@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import ViewCourse from './ViewCourse';
+import ViewCourse from '../../components/ui/ViewCourse';
 import StarRating from "../../components/functional/StarRatings";
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/`;
 
 export default function Courses() {
     const [courses, setCourses] = useState([]);
+    const [query, setQuery] = useState("");
+
+
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [enrollments, setEnrollments] = useState(null)
 
@@ -16,40 +19,27 @@ export default function Courses() {
     const user = storedUser ? JSON.parse(storedUser) : null;
     const navigate = useNavigate()
 
-    async function handleEnroll(courseId) {
-        if (!user) {
-            navigate('/auth/register')
-        } else {
-            const response = await axios.post(`${baseUrl}enrollments/`,
-                {
-                    course: courseId,
-                    access_type: 'normal',
-                }, { withCredentials: true }
-            )
-            alert(response.data.message)
-            navigate(`/learning/${courseId}`)
-        }
-    }
-
     useEffect(() => {
         axios.get(`${baseUrl}courses/`)
             .then(res => setCourses(res.data))
             .catch(err => console.error(err));
     }, []);
-    // const coursesString = JSON.stringify(courses)
 
     useEffect(() => {
-        (async function getEnrollments() {
-            try {
-                const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true })
-                setEnrollments(res.data)
-            }
-            catch (e) {
-                console.log("can't fetch enroolements", e.data)
-            }
-        })()
-    }, [])
-
+        if (user?.role === "Teacher" || user?.role === "teacher") {
+            return
+        } else {
+            (async function getEnrollments() {
+                try {
+                    const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true })
+                    setEnrollments(res.data)
+                }
+                catch (e) {
+                    console.log("can't fetch enroolements", e.data)
+                }
+            })()
+        }
+    },)
 
     async function handleView(courseId) {
         try {
@@ -64,34 +54,80 @@ export default function Courses() {
         setSelectedCourse(null);
     }
 
+
+    const filteredCourses = courses.filter(c =>
+        c.title.toLowerCase().includes(query.toLowerCase())
+    )
     return (
-        <div style={{maxWidth:"80%",margin:"auto",marginTop:"15px"}}>
-            {courses.map((course) => {
+        <div style={{ maxWidth: "80%", margin: "auto", marginTop: "15px", overflowX: "hidden" }}>
+            <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, marginBottom: "15px", margin: "auto" }}>
+                <input
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    style={{ flexGrow: 1, minWidth: 0, padding: '8px 12px', borderRadius: '6px 0 0 6px', border: '1px solid #ccc', borderRight: 'none', outline: 'none', boxSizing: 'border-box', margin: 0 }}
+                />
+                <button
+                    type="submit"
+                    style={{ padding: '8px 16px', borderRadius: '0 6px 6px 0', border: '1px solid #ccc', borderLeft: 'none', backgroundColor: '#4f46e5', color: '#fff', cursor: 'pointer', whiteSpace: 'nowrap', margin: 0 }}
+                    onClick={(e) => e.preventDefault()} // prevent page reload
+                >
+                    Search
+                </button>
+            </form>
+
+            {filteredCourses.map((course) => {
                 const isEnrolled = enrollments?.some(
                     (enrollment) => enrollment.course === course.id
                 );
                 return (
-                    <div key={course.id} style={{ border: "1px solid #ccc", marginBottom: "1rem", padding: "1rem" }}>
-                        <h2>{course.title}</h2>
-                        <p>{course.description}</p>
-                        <p>Price: ₹{course.price}</p>
-                        <div style={{display:"flex", alignItems:"center", gap:"10px"}}><span style={{position:"relative",top:"2px"}}>Ratings: </span><StarRating rating={course.ratings || 0}/></div>
-                        <div style={{display:"flex",gap:"10px"}}>
-                            {(!user || user?.role !== "teacher") && (
+                    <div key={course.id} style={{ border: "1px solid #ccc", marginBottom: "1rem", padding: "1rem", display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", maxWidth: "700px", aspectRatio: "20/10", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}>
+                        <div style={{ flex: 1, padding: "16px" }}>
+                            <h2 style={{ margin: 0, fontSize: "", fontWeight: "bold" }}>{course.title}</h2>
+                            <a href={`/profile/${course.instructor_username}/`} style={{ color: "var(--color)" }}>
+                                <h6><i>{course.instructor_username}</i></h6>
+                            </a>
+                            <p style={{ margin: "8px 0", color: "#555" }}>{course.description.slice(0, 100)}</p>
+                            <StarRating rating={course.rating} />
+                            {user?.role !== "teacher" && (
                                 isEnrolled ? (
                                     <button onClick={() => navigate(`/learning/${course.id}`)}>
                                         Open
                                     </button>
                                 ) : (
-                                    <button onClick={() => handleEnroll(course.id)}>
-                                        Enroll
-                                    </button>
+                                    <Enroll user={user} courseId={course.id} />
                                 )
                             )}
                             <button onClick={() => handleView(course.id)}>View</button>
                         </div>
-                    </div>)
-            })}
+                        <div style={{
+                            flex: "0 0 40%",
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background: "#eee"
+                        }}
+                        >
+                            <img
+                                src={course.cover_image === "" ? '/potato.jpeg' : decodeURIComponent(course.cover_image)}
+                                alt="course_cover_img"
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover"
+                                }}
+                                loading="lazy"
+                            />
+                        </div>
+
+                    </div>
+                )
+            })
+            }
+
             {selectedCourse && (
                 <ViewCourse
                     course={selectedCourse}
@@ -100,4 +136,27 @@ export default function Courses() {
             )}
         </div>
     );
+}
+
+export function Enroll(props) {
+    const navigate = useNavigate()
+    async function handleEnroll(courseId) {
+        if (!props.user) {
+            navigate('/auth/register')
+        } else {
+            const response = await axios.post(`${baseUrl}enrollments/`,
+                {
+                    course: courseId,
+                    access_type: 'normal',
+                }, { withCredentials: true }
+            )
+            alert(response.data.message)
+            navigate(`/learning/${courseId}`)
+        }
+    }
+    return (
+        <button onClick={() => handleEnroll(props.courseId)}>
+            {props.text || "Enroll"}
+        </button>
+    )
 }

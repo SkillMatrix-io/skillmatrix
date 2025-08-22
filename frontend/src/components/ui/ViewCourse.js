@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import StarRating from "../../components/functional/StarRatings";
+import StarRating from "../functional/StarRatings";
 
 export default function ViewCourse({ course, onClose }) {
     const overlayRef = useRef(null);
@@ -43,7 +43,7 @@ export default function ViewCourse({ course, onClose }) {
                 <p>{course.description}</p>
                 <p>Price: ₹{course.price}</p>
                 <div>Ratings: <StarRating rating={course.ratings || 0} /></div>
-                
+
                 <button onClick={onClose}>Close</button>
             </div>
         </div>

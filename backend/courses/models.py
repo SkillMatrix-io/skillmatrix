@@ -14,7 +14,7 @@ class Course(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     categories = models.ManyToManyField(Category, blank=True, related_name='courses')
-    cover_image = models.ImageField(upload_to='course_covers/', null=True, blank=True)
+    cover_image = models.URLField(null=True, blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     is_published = models.BooleanField(default=False)
     rating = models.FloatField(default=0)
@@ -24,28 +24,6 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
-
-# class Lesson(models.Model):
-#     CONTENT_TYPE_CHOICES = [
-#         ('video', 'Video'),
-#         ('pdf', 'PDF'),
-#         ('text', 'Text'),
-#     ]
-
-#     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
-#     title = models.CharField(max_length=255)
-#     content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES)
-#     content_file = models.FileField(upload_to='lessons/', null=True, blank=True)
-#     video_url = models.URLField(blank=True, null=True)
-#     order = models.PositiveIntegerField()
-#     text_content = models.TextField(null=True, blank=True)
-
-#     class Meta:
-#         # ensures ordered read
-#         ordering = ['order']
-
-#     def __str__(self):
-#         return f"{self.course.title} - {self.title}"
 
 class Lesson(models.Model):
     CONTENT_TYPE_CHOICES = [
@@ -98,22 +76,3 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.course.title} - {self.title}"
-
-# if (lesson.content_type === 'pdf') {
-#   return <iframe src={lesson.content_url} />;
-# }
-# if (lesson.content_type === 'video') {
-#   return <video src={lesson.content_url} controls />;
-# }
-# if (lesson.content_type === 'text') {
-#   return <ReactMarkdown>{lesson.text_content}</ReactMarkdown>;
-# }
-
-# if (lesson.content_url) {
-#   return lesson.content_type === 'pdf'
-#     ? <iframe src={lesson.content_url} />
-#     : <video src={lesson.content_url} controls />;
-# }
-# if (lesson.text_content) {
-#   return <ReactMarkdown>{lesson.text_content}</ReactMarkdown>;
-# }

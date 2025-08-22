@@ -53,7 +53,8 @@ export function UserLogin({ role }) {
                 { withCredentials: true }
             );
             setResponse(response?.data.message)
-            localStorage.setItem("user", JSON.stringify(response.data));
+            const { message, ...userData } = response.data;
+            localStorage.setItem("user", JSON.stringify(userData));
             navigate(`/dashboard/${role}`);
         } catch (error) {
             setError(error.response?.data?.message || "Login failed");

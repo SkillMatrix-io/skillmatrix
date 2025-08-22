@@ -87,7 +87,8 @@ export function UserRegister({ role }) {
             console.log(`Sent userdata: ${role}`)
             console.log(response?.data);  // could be token, user data, etc.
             // Redirect to dashboard or save token
-            localStorage.setItem("user", JSON.stringify(response.data));
+            const { message, ...userData } = response.data;
+            localStorage.setItem("user", JSON.stringify(userData));
             navigate(`/dashboard/${role}`)
 
             // If you want to store session info or use HttpOnly cookies for JWT, you must enable withCredentials.
@@ -123,7 +124,6 @@ export function UserRegister({ role }) {
 
     return (
         <>
-            {/* <p>{role.charAt(0).toUpperCase() + role.slice(1)} Register here</p> capitalize role lol */}
             <h1>Fill your details to register</h1>
             {response && <p>response</p>}
             <form onSubmit={submit}>
@@ -133,7 +133,6 @@ export function UserRegister({ role }) {
                 <label htmlFor="email">Email</label>
                 <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" />
                 <br />
-                {/* <label htmlFor="avatar">Choose Avatar</label> <select id="avatar" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)}> <option value="avatar1.png">Avatar 1</option> <option value="avatar2.png">Avatar 2</option> </select> */}
                 <br />
                 <label htmlFor="password">Password</label>
                 <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" />

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../components/functional/Toast";
@@ -14,13 +13,13 @@ export default function TeacherDashboard() {
 
     const navigate = useNavigate();
 
-    const [bio, setBio] = useState(storedUser.bio || "");
+    const [bio, setBio] = useState(storedUser?.bio || "");
     const [isDirty, setIsDirty] = useState(false);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setIsDirty(bio !== (storedUser.bio || ""));
-    }, [bio, storedUser.bio]);
+        setIsDirty(bio !== (storedUser?.bio || ""));
+    }, [bio, storedUser?.bio]);
 
     const handleChange = (e) => {
         setBio(e.target.value);
@@ -35,7 +34,8 @@ export default function TeacherDashboard() {
                 { withCredentials: true }
             );
             console.log("Bio saved:", res.data.bio);
-            localStorage.setItem("user.bio", bio)
+            storedUser.bio = bio
+            localStorage.setItem("user",JSON.stringify(storedUser))
             setIsDirty(false);
         } catch (err) {
             console.error("Failed to save bio", err);
@@ -126,7 +126,7 @@ export default function TeacherDashboard() {
                 <div>
                     <h3>Your courses</h3>
                     {teacherCourses.map((course, key) => (
-                        <div key={key} className="course-card">
+                        <div key={key} className="course-card" style={{display:"flex", justifyContent:"space-between"}}>
                             <b>{course?.title}</b>
                             <div>
                                 <button onClick={() => handleEdit(course.id)}>Edit</button>
@@ -148,7 +148,7 @@ export default function TeacherDashboard() {
                     placeholder="Write your bio..."
                 />
                 {isDirty && (
-                    <button onClick={handleSave} disabled={loading}>
+                    <button onClick={handleSave} disabled={loading && !isDirty}>
                         {loading ? "Saving..." : "Save"}
                     </button>
                 )}

@@ -15,6 +15,7 @@ from user.authentication import CookieJWTAuthentication
 from rest_framework.parsers import MultiPartParser, FormParser #type: ignore
 # as serializer needs parsed input just parsing the lessons here.
 from rest_framework.exceptions import NotFound
+from .utils.supabase import upload_cover_image
 
 import json
 import pprint
@@ -25,7 +26,6 @@ class CourseCreateAPIView(APIView):
     authentication_classes = [CookieJWTAuthentication]
 
     parser_classes = [MultiPartParser, FormParser] 
-
 
     def post(self, request):
         # If 'lessons' came as a JSON string in formData, parse it manually
@@ -54,6 +54,10 @@ class CourseCreateAPIView(APIView):
         'lessons': lessons_data
         }
 
+        cover_file = request.FILES.get('cover_image')
+        if cover_file:
+            public_url = upload_cover_image(cover_file, data.get('title', 'untitled'))
+            data['cover_image'] = public_url
         pprint.pprint(data)
         serializer = CourseSerializer(data=data, context={'request':request}) 
         # sending request as context to share instrcutor's username
@@ -113,16 +117,22 @@ class CourseUpdateAPIView(APIView):
     def patch(self, request, pk):
         course = self.get_object(pk)
 
+        # Handle lessons
         lessons_data = json.loads(request.data.get('lessons', '[]'))
         for lesson in lessons_data:
             file_key = lesson.get('content_file')
             if file_key and file_key in request.FILES:
                 lesson['content_file'] = request.FILES[file_key]
-            # else: let file_url flow through
 
         data = request.data.copy()
         if lessons_data:
             data['lessons'] = lessons_data
+
+        # ✅ Handle cover_image
+        cover_file = request.FILES.get('cover_image')
+        if cover_file:
+            public_url = upload_cover_image(cover_file, course.title or "untitled")
+            data['cover_image'] = public_url
 
         serializer = CourseSerializer(course, data=data, partial=True, context={'request': request})
         if serializer.is_valid():

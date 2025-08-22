@@ -1,15 +1,18 @@
 # courses/serializers.py
 from rest_framework import serializers #type: ignore
 from .models import Course, Lesson, Category
-from .utils.supabase import upload_lesson_file
+from .utils.supabase import upload_lesson_file, upload_cover_image
 
 class LessonSerializer(serializers.ModelSerializer):
     content_file = serializers.FileField(write_only=True, required=False, allow_null=True)
-    file_url = serializers.CharField(write_only=True, required=False, allow_null=True)
+    file_url = serializers.CharField(write_only=True, required=False, allow_null=True, allow_blank=True)
 
     class Meta:
         model = Lesson
         exclude = ['course']
+        extra_kwargs = {
+            'content_url': {'read_only': True},  # <--- this is key
+        }
 
     def validate(self, attrs):
         # Ensure at least one of the three sources exists
@@ -32,12 +35,12 @@ class CourseDialogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ["id", "title", "price", "description", "cover_image", "instructor_username"]
-        # exclude = []
 
 # Serializers convert Django models ↔ JSON and do field-level validation.
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, required=False)
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+    cover_image = serializers.CharField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Course
@@ -50,14 +53,20 @@ class CourseSerializer(serializers.ModelSerializer):
         instructor = self.context['request'].user
         lessons_data = validated_data.pop('lessons',[])
         categories_data = validated_data.pop('categories',[])
-
+        # title = validated_data.get('title', 'untitled')
         course = Course.objects.create(instructor=instructor,**validated_data)
         course.categories.set(categories_data)
+
+        # image_file = validated_data.pop('cover_image',None)
+        # if image_file:
+        #     cover_image = upload_cover_image(image_file,title or "untitled")
+        #     course.cover_image = cover_image
+        #     course.save()
         
         for lesson_data in lessons_data:  
             file = lesson_data.pop('content_file', None)
             file_url = lesson_data.pop('file_url',None)
-
+            print("DEBUG >>>", lesson_data, file, file_url)
             if file_url:
                 lesson_data['content_url'] = file_url
             elif file:

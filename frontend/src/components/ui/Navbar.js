@@ -66,12 +66,6 @@ export default function Navbar() {
                 </li>}
             </ul>
 
-            <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, margin: 0, }}>
-              <input type="search" placeholder="Search" aria-label="Search" style={{ flexGrow: 1, minWidth: 0, padding: '8px 12px', borderRadius: '6px 0 0 6px', border: '1px solid #ccc', borderRight: 'none', outline: 'none', boxSizing: 'border-box', margin: 0, }} />
-              <button type="submit" style={{ padding: '8px 16px', borderRadius: '0 6px 6px 0', border: '1px solid #ccc', borderLeft: 'none', backgroundColor: '#4f46e5', color: '#fff', cursor: 'pointer', whiteSpace: 'nowrap', margin: 0, }}>Search
-              </button>
-            </form>
-
             {!user && <Link className="nav-link" to={'/auth/register'}><button className="btn btn-primary ms-2 fs-5 m-2">Register</button></Link>}
             <button className="nav-link btn btn-primary m-2" onClick={toggleTheme} aria-label="Toggle theme">{theme === 'dark' ? <Sun /> : <Moon />}</button>
 
@@ -81,7 +75,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      <button onClick={() => HandleDevs()} style={{ border: "var(--color) 1px solid", position: "fixed", bottom: "10px", left: "1%" }}>Meet the devs!</button>
+      <button onClick={() => HandleDevs()} style={{ border: "var(--color) 1px solid", position: "fixed", bottom: "10px", left: "1%", zIndex:"999" }}>Meet the devs!</button>
     </>
   );
 }

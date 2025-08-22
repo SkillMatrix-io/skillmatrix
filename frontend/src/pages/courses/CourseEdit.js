@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import './CourseEdit.css'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { showToast } from '../../components/functional/Toast';
 
 const isValidURL = (str) => {
@@ -28,6 +28,9 @@ const emptyLesson = {
 
 export default function CreateEditCourse() {
     const { courseId } = useParams();
+    const [loading, setLoading] = useState(false);
+    // have to fix a condition what if someone puts thier own courseId -- no fail safe for it yet
+    const navigate = useNavigate()
     const [courseData, setCourseData] = useState({
         title: '',
         description: '',
@@ -55,7 +58,7 @@ export default function CreateEditCourse() {
     useEffect(() => {
         if (courseId && courseId !== "new") {
             axios
-                .get(`${API_URL}create-edit/${courseId}/`,{withCredentials:true})
+                .get(`${API_URL}create-edit/${courseId}/`, { withCredentials: true })
                 .then((res) => {
                     setCourseData({
                         ...res.data,
@@ -170,25 +173,34 @@ export default function CreateEditCourse() {
         });
 
         formData.append("lessons", JSON.stringify(updatedLessons));
-
+        if (courseData.cover_image) {
+            formData.append("cover_image", courseData.cover_image)
+        }
         try {
+            setLoading(true)
             if (courseId && courseId !== "new") {
                 await axios.patch(`${API_URL}create-edit/${courseId}/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });
-                showToast.success("Course update")
+                showToast.success("Course updated")
+                setLoading(false)
+                navigate('/dashboard/teacher')
             } else {
                 await axios.post(`${API_URL}create-edit/`, formData, {
-                    // await axios.post(`${API_URL}create/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' },
                     withCredentials: true,
                 });
                 showToast.success("Course created")
+                setLoading(false)
+                navigate('/dashboard/teacher')
             }
         } catch (err) {
+            setLoading(false)
             console.error(err);
-            showToast.error(err.response.data.lessons[0].content_file ? "Add a file":"Something went wrong")
+            var errData = (err.response?.data)
+            // errData = JSON.stringify(errData[0])
+            showToast.error(`${JSON.stringify(errData)}` || "Something went wrong")
         }
     };
 
@@ -196,18 +208,28 @@ export default function CreateEditCourse() {
         const updatedLessons = lessons.map((lesson, i) =>
             i === index
                 ? {
-                    ...lesson,              
+                    ...lesson,
                     file_url: "",
                     content_file: null,
                     title: "",
                     description: "",
-                    text_content: "",       
-                    content_type: "",       
+                    text_content: "",
+                    content_type: "",
                 }
                 : lesson
         );
         setLessons(updatedLessons);
     };
+
+    useEffect(() => {
+        if (loading) {
+            showToast.loadingUpload("Uploading...");
+        } else {
+            setTimeout(() => {
+                toast.dismiss("upload-loader");
+            }, 1000)
+        }
+    }, [loading]);
 
     return (
         <div className="container">
@@ -233,7 +255,10 @@ export default function CreateEditCourse() {
                     <p className="warning">Price must be between ₹0 and ₹9999.</p>
                 ) : null}
 
+                {/* }
+                {courseId === "new" &&  */}
                 <input type="file" name="cover_image" onChange={handleChange} className="file-input" />
+
                 <label className="checkbox-label">
                     <input type="checkbox" name="is_published"
                         checked={courseData.is_published}
@@ -328,6 +353,24 @@ export default function CreateEditCourse() {
                                         className="input"
                                         disabled={!!lesson.content_file} />
                                     <button type="button" onClick={() => clearLessonMedia(index)}>Clear?</button>
+                                    {/* Preview section */}
+                                    {(lesson.file_url || lesson.content_url) && (
+                                        <div className="mt-2 border rounded p-2 w-64 h-40 overflow-hidden">
+                                            {lesson.content_type === "video" ? (
+                                                <video
+                                                    src={lesson.file_url || lesson.content_url}
+                                                    controls
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            ) : (
+                                                <iframe
+                                                    src={lesson.file_url || lesson.content_url}
+                                                    title="PDF Preview"
+                                                    className="w-full h-full"
+                                                />
+                                            )}
+                                        </div>
+                                    )}
                                 </>
                             ) : null}
 
@@ -359,7 +402,7 @@ export default function CreateEditCourse() {
                 </div>
 
                 <button type="submit" className="btn-primary">
-                    {courseId && courseId!=="new" ? 'Update' : 'Create'} Course
+                    {courseId && courseId !== "new" ? 'Update' : 'Create'} Course
                 </button>
             </form>
         </div>

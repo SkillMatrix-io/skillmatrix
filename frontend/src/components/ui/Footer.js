@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="footer-section text-center">
+    <footer className="footer-section text-center" style={{ backgroundColor: "var(--bg)", color: "var(--text)"}}>
       <div className="footer-content">
         <p>© {new Date().getFullYear()} SkillMatriX</p>
         <div className="footer-links">

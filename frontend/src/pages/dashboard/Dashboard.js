@@ -5,7 +5,8 @@ import TeacherDashboard from "./TeacherDashboard";
 import { useSession } from "../../context/SessionContext";
 export default function Dashboard() {
     const { user } = useSession();
-        switch (user?.role) {
+    const storedUser = localStorage.getItem("user")
+        switch (user?.role || storedUser?.role) {
             case 'student':
                 return <StudentDashboard />;
             case 'teacher':

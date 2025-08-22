@@ -16,8 +16,6 @@ export const showToast = {
             position: "bottom-right",
             autoClose: 4000,
             hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
             draggable: true,
         }),
     loading: (msg) =>
@@ -29,6 +27,16 @@ export const showToast = {
             closeOnClick: false,
             draggable: false,
         }),
+    loadingUpload: (msg) =>
+        toast.loading(msg, {
+            toastId: "upload-loader",
+            position: "bottom-right",
+            autoClose: false,
+            hideProgressBar: true,
+            closeOnClick: false,
+            draggable: false,
+        }),
+    
     info: (msg) =>
         toast.info(msg, {
             position: "bottom-right",

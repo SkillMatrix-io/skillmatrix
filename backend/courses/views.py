@@ -51,7 +51,7 @@ def instructor_course_list_view(request):
         Course.objects
         .filter(instructor=request.user)
         .select_related("instructor")
-        .only("id", "title", "price", "description", "instructor__username","is_published")
+        .only("id", "title", "price", "description", "instructor__username","is_published","cover_image")
     )
     serializer = CourseCardSerializer(courses, many=True)
     return Response(serializer.data)
