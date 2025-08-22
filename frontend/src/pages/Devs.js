@@ -1,7 +1,9 @@
 export default function Devs(){
     return(
         <>
-        <p>Meet the devs</p>
+            <div className="container">
+                <p className="text-center display-1 mb-3">Meet the Devs</p>
+            </div>
         </>
     )
 }
