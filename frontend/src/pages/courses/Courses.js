@@ -60,7 +60,7 @@ export default function Courses() {
     )
     return (
         <div style={{ maxWidth: "80%", margin: "auto", marginTop: "15px", overflowX: "hidden" }}>
-            <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, marginBottom: "15px", margin: "auto" }}>
+            <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, marginBottom: "35px", margin: "auto" }}>
                 <input
                     type="search"
                     placeholder="Search"
@@ -78,55 +78,66 @@ export default function Courses() {
                 </button>
             </form>
 
-            {filteredCourses.map((course) => {
-                const isEnrolled = enrollments?.some(
-                    (enrollment) => enrollment.course === course.id
-                );
-                return (
-                    <div key={course.id} style={{ border: "1px solid #ccc", marginBottom: "1rem", padding: "1rem", display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", maxWidth: "700px", aspectRatio: "20/10", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}>
-                        <div style={{ flex: 1, padding: "16px" }}>
-                            <h2 style={{ margin: 0, fontSize: "", fontWeight: "bold" }}>{course.title}</h2>
-                            <a href={`/profile/${course.instructor_username}/`} style={{ color: "var(--color)" }}>
-                                <h6><i>{course.instructor_username}</i></h6>
-                            </a>
-                            <p style={{ margin: "8px 0", color: "#555" }}>{course.description.slice(0, 100)}</p>
-                            <StarRating rating={course.rating} />
-                            {user?.role !== "teacher" && (
-                                isEnrolled ? (
-                                    <button onClick={() => navigate(`/learning/${course.id}`)}>
-                                        Open
-                                    </button>
-                                ) : (
-                                    <Enroll user={user} courseId={course.id} />
-                                )
-                            )}
-                            <button onClick={() => handleView(course.id)}>View</button>
-                        </div>
-                        <div style={{
-                            flex: "0 0 40%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            background: "#eee"
-                        }}
-                        >
-                            <img
-                                src={course.cover_image === "" ? '/potato.jpeg' : decodeURIComponent(course.cover_image)}
-                                alt="course_cover_img"
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                    objectFit: "cover"
-                                }}
-                                loading="lazy"
-                            />
-                        </div>
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(700px, 1fr))",
+                gap: "20px",
+                width: "100%",
+                height:"100%",
+            }}>
+                {filteredCourses.map((course) => {
+                    const isEnrolled = enrollments?.some(
+                        (enrollment) => enrollment.course === course.id
+                    );
+                    return (
+                        <div key={course.id} style={{ border: "1px solid #ccc", marginBottom: "1rem", padding: "1rem", display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", maxWidth: "700px", aspectRatio: "20/10", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}>
+                            <div style={{ flex: 1, padding: "16px" }}>
+                                <h2 style={{ margin: 0, fontSize: "", fontWeight: "bold" }}>{course.title}</h2>
+                                <a href={`/profile/${course.instructor_username}/`} style={{ color: "var(--color)" }}>
+                                    <h6><i>{course.instructor_username}</i></h6>
+                                </a>
+                                <p style={{ margin: "8px 0", color: "#555" }}>{course.description.slice(0, 100)}</p>
+                                <StarRating rating={course.rating} />
+                                {user?.role !== "teacher" && (
+                                    isEnrolled ? (
+                                        <button onClick={() => navigate(`/learning/${course.id}`)}>
+                                            Open
+                                        </button>
+                                    ) : (
+                                        <Enroll user={user} courseId={course.id} />
+                                    )
+                                )}
+                                <button onClick={() => handleView(course.id)}>View</button>
+                            </div>
+                            <div style={{
+                                flex: "0 0 40%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color:"var(--bg)"
+                            }}
+                            >
+                                <img
+                                    src={course.cover_image === "" ? '/potato.jpeg' : decodeURIComponent(course.cover_image)}
+                                    alt="course_cover_img"
+                                    style={{
+                                        width: "105%",
+                                        height: "110%",
+                                        right:"-10px",
+                                        objectFit: "cover",
+                                        position:"relative",
 
-                    </div>
-                )
-            })
-            }
+                                    }}
+                                    loading="lazy"
+                                />
+                            </div>
+
+                        </div>
+                    )
+                })
+                }
+            </div>
 
             {selectedCourse && (
                 <ViewCourse
