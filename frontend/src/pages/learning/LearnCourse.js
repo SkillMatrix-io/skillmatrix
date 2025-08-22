@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import StarRating from "../../components/StarRatings";
+import StarRating from "../../components/functional/StarRatings";
 
 export default function LearnCourse() {
     const { id } = useParams();

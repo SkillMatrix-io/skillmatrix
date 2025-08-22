@@ -6,22 +6,33 @@ from .models import User
 
 class RegisterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message="Username must be unique")]
     )
-    password = serializers.CharField(write_only=True, validators=[validate_password])
-    email = serializers.EmailField(required=True)
-    role = serializers.ChoiceField(choices=[('student', 'Student'), ('teacher', 'Teacher')])  # adjust if needed
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message="Email must be unique")]
+    )
+    password = serializers.CharField(
+        write_only=True,
+        validators=[validate_password]
+    )
+    role = serializers.ChoiceField(
+        choices=[('student', 'Student'), ('teacher', 'Teacher')]
+    )
+
     class Meta:
-        model=User
-        fields=('username','email','password','role','bio','avatar')
+        model = User
+        fields = ('username', 'email', 'password', 'role', 'bio', 'avatar')
+
     def create(self, validated_data):
-        user=User.objects.create_user(
+        user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
             role=validated_data['role'],
-            bio=validated_data.get('bio', ''),  # optional fallback
-            avatar=validated_data.get('avatar', '1')
+            bio=validated_data.get('bio', ''),      # optional
+            avatar=validated_data.get('avatar', '1') # default avatar
         )
         return user
     # create_user hashes the password 

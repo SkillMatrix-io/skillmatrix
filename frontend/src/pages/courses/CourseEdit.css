@@ -1,197 +1,112 @@
-.course-edit-container {
-  --background: #fff;
-  --text: #222;
-  --link: #4f46e5;
-  --link-hover: #4338ca;
-  --border: #ccc;
-  --btn-bg: #4f46e5;
-  --btn-text: #fff;
-  --btn-hover-bg: #4338ca;
-
-  max-width: 900px;
-  margin: 2rem auto 4rem;
-  background-color: var(--background);
-  color: var(--text);
-  border-radius: 12px;
-  padding: 2.5rem 3rem;
-  box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    color: var(--color);
 }
 
-.course-edit-container .heading-2 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 1.8rem;
-  color: var(--link);
-  text-align: center;
+button {
+    color: var(--bg);
+    background-color: var(--color);
+    transition: all 200ms;
 }
 
-.course-edit-container form label {
-  display: block;
-  font-weight: 600;
-  margin-top: 1.4rem;
-  margin-bottom: 0.5rem;
-  color: var(--link);
+button:hover {
+    color: var(--color);
+    background-color: var(--bg);
 }
 
-.course-edit-container .input,
-.course-edit-container .textarea,
-.course-edit-container select,
-.course-edit-container .file-input {
-  width: 100%;
-  padding: 0.65rem 1rem;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-size: 1rem;
-  color: var(--text);
-  background-color: var(--background);
-  transition: border-color 0.25s ease;
-  box-sizing: border-box;
+.heading-2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
 }
 
-.course-edit-container .input:focus,
-.course-edit-container .textarea:focus,
-.course-edit-container select:focus,
-.course-edit-container .file-input:focus {
-  outline: none;
-  border-color: var(--link-hover);
-  box-shadow: 0 0 6px var(--link-hover);
+.heading-3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
 }
 
-.course-edit-container .textarea {
-  min-height: 120px;
-  resize: vertical;
+.input,
+.textarea,
+select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--bg);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
 }
 
-.course-edit-container .file-input {
-  padding: 0.4rem 1rem;
+.textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
-.course-edit-container .checkbox-label {
-  display: flex;
-  align-items: center;
-  margin-top: 1rem;
-  color: var(--text);
-  font-weight: 600;
+.file-input {
+    display: block;
+    margin-bottom: 0.5rem;
 }
 
-.course-edit-container .checkbox-label input[type="checkbox"] {
-  margin-right: 0.65rem;
-  cursor: pointer;
+.checkbox-label {
+    display: inline-block;
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
 }
 
-.course-edit-container .warning {
-  color: #d9534f;
-  margin-top: 0.2rem;
-  font-weight: 600;
+.label-bold {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
 }
 
-.course-edit-container .category-group {
-  margin-top: 1.8rem;
-  border-top: 1px solid var(--border);
-  padding-top: 1.2rem;
+.lesson-section {
+    margin-top: 1rem;
 }
 
-.course-edit-container .label-bold {
-  font-weight: 700;
-  color: var(--link);
-  margin-bottom: 0.75rem;
-  user-select: none;
+.lesson-box {
+    border: 1px solid var(--bg);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
 }
 
-.course-edit-container .lesson-section {
-  margin-top: 3rem;
+.btn-outline,
+.btn-primary,
+.btn-danger {
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--color);
+    background: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
 }
 
-.course-edit-container .heading-3 {
-  font-size: 1.6rem;
-  color: var(--link);
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--link-hover);
-  padding-bottom: 0.3rem;
+.btn-outline:hover {
+    background: var(--bg);
 }
 
-.course-edit-container .lesson-box {
-  background-color: var(--background);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1rem 1.5rem 1.8rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 3px 12px rgb(0 0 0 / 0.04);
-  transition: box-shadow 0.3s ease;
+.btn-primary {
+    font-weight: bold;
 }
 
-.course-edit-container .lesson-box:hover {
-  box-shadow: 0 6px 18px rgb(0 0 0 / 0.1);
+.btn-primary:hover {
+    background: var(--bg);
 }
 
-.course-edit-container .lesson-box label {
-  margin-top: 1rem;
-  font-weight: 700;
-  color: var(--link);
+.btn-danger {
+    color: red;
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
-.course-edit-container .lesson-box button[type="button"] {
-  margin-top: 1.4rem;
-  background-color: #d9534f;
-  color: white;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.course-edit-container .lesson-box button[type="button"]:hover {
-  background-color: #c9302c;
-}
-
-.course-edit-container .btn-outline {
-  display: inline-block;
-  border: 2px solid var(--link);
-  color: var(--link);
-  font-weight: 700;
-  padding: 0.6rem 1.6rem;
-  border-radius: 10px;
-  background: transparent;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-bottom: 2rem;
-}
-
-.course-edit-container .btn-outline:hover,
-.course-edit-container .btn-outline:focus {
-  background-color: var(--link);
-  color: white;
-}
-
-.course-edit-container .btn-primary {
-  width: 100%;
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
-  padding: 1rem 0;
-  border: none;
-  font-size: 1.2rem;
-  font-weight: 800;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.course-edit-container .btn-primary:hover,
-.course-edit-container .btn-primary:focus {
-  background-color: var(--btn-hover-bg);
-  color: white;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .course-edit-container {
-    padding: 2rem 1.5rem;
-  }
-
-  .course-edit-container .lesson-box {
-    padding: 1rem 1.2rem 1.4rem;
-  }
+.btn-danger:hover {
+    text-decoration: underline;
 }

@@ -8,6 +8,7 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, TokenErro
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 import datetime
 
 User = get_user_model()
@@ -143,3 +144,15 @@ def session_view(request):
         except User.DoesNotExist:
             return Response({"detail": "Invalid user."}, status=status.HTTP_401_UNAUTHORIZED)
     return Response({"detail": "Not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def save_bio(request, pk):
+    bio = str(request.data.get("bio", ""))
+    user = get_object_or_404(User, pk=pk)
+    # Make sure only the owner can update their bio
+    if request.user != user:
+        return Response({'error': 'Permission denied'}, status=403)
+    user.bio = bio
+    user.save()
+    return Response({'message': 'Bio updated successfully', 'bio': user.bio}, status=200)
