@@ -13,13 +13,13 @@ export default function Devs(){
       github: "https://github.com/"
     },
     {
-      image: "/profile.jpg",
-      name: "Vineet Kumar",
-      role: "Backend Developer",
+      image: "https://media.licdn.com/dms/image/v2/D5603AQGhwPXE0QTB-Q/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1718650797379?e=1758758400&v=beta&t=BB_gHHgkyTDg6QL27UvZJDREu2V6IkZBRj_TotBpMKY",
+      name: "Vineet Kushwaha",
+      role: "Fullstack Developer",
       description: "Works with Node.js, Express, and databases to build scalable apps.",
-      instagram: "https://instagram.com/",
-      linkedin: "https://linkedin.com/in/",
-      github: "https://github.com/"
+      instagram: "https://instagram.com/vineetwhy",
+      linkedin: "https://linkedin.com/in/vineet-k09",
+      github: "https://github.com/vineet-k09"
     },
     {
       image: "/profile.jpg",

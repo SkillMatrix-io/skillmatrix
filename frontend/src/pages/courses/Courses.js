@@ -60,7 +60,7 @@ export default function Courses() {
     )
     return (
         <div style={{ maxWidth: "80%", margin: "auto", marginTop: "15px", overflowX: "hidden" }}>
-            <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, marginBottom: "35px", margin: "auto" }}>
+            <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, marginBottom: "20px", margin: "auto" }}>
                 <input
                     type="search"
                     placeholder="Search"
@@ -84,6 +84,7 @@ export default function Courses() {
                 gap: "20px",
                 width: "100%",
                 height:"100%",
+                marginTop:"20px",
             }}>
                 {filteredCourses.map((course) => {
                     const isEnrolled = enrollments?.some(
@@ -97,6 +98,7 @@ export default function Courses() {
                                     <h6><i>{course.instructor_username}</i></h6>
                                 </a>
                                 <p style={{ margin: "8px 0", color: "#555" }}>{course.description.slice(0, 100)}</p>
+                                <em>{course.price === '0.00' ? "Free" : `₹${course.price}`}</em>
                                 <StarRating rating={course.rating} />
                                 {user?.role !== "teacher" && (
                                     isEnrolled ? (
