@@ -51,7 +51,9 @@ export default function Devs(){
   ];
 
  return (
-  <div className="my-5">
+  <div className="d-flex flex-column  min-vh-100">
+    <div className="flex-fill">
+    <div className="my-5">
     <div className="row g-4 justify-content-center m-3">
       {devs.map((dev, index) => {
         // alternate up and down offset
@@ -68,6 +70,8 @@ export default function Devs(){
         );
       })}
     </div>
+  </div>
+  </div>
   </div>
 );
 }

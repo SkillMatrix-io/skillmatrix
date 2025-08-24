@@ -1,3 +1,5 @@
+import "./Devcard.css";
+
 export default function Devcard({image,name,role,description,instagram,linkedin,github}) {
     return(
         <div className="card h-100 text-center shadow-sm">
@@ -13,7 +15,7 @@ export default function Devcard({image,name,role,description,instagram,linkedin,
                 <p className="card-text text-justify">{description}</p>
             </div>
             <div className="card-footer bg-white">
-                <div className="d-flex justify content-center gap-3">
+                <div className="d-flex justify-content-center align-items-center gap-3">
                     {instagram && (
                         <a href={instagram} target="_blank" rel="noopener noreferrer" className="text-dark">
                             <i className="bi bi-instagram"></i>
