@@ -18,7 +18,7 @@ export default function Devs(){
       role: "Fullstack Developer",
       description: "Works with Node.js, Express, and databases to build scalable apps.",
       instagram: "https://instagram.com/vineetwhy",
-      linkedin: "https://linkedin.com/in/vineet-k09",
+      linkedin: "https://linkedin.com/in/vineetwhy",
       github: "https://github.com/vineet-k09"
     },
     {
