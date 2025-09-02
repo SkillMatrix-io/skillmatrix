@@ -32,7 +32,6 @@ export default function Login() {
                     <UserLogin role={userRole} />
                 </div>
             </div>
-            <AdminLogin />
         </>
     )
 }
@@ -100,12 +99,4 @@ export function UserLogin({ role }) {
             </form>
         </>
     );
-}
-
-export function AdminLogin() {
-    return (
-        <p className="center">Are u an admin?
-            Login here
-        </p>
-    )
 }

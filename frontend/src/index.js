@@ -37,7 +37,6 @@ root.render(
           <Routes>
             <Route path="/" element={<App />} />
             <Route path="/courses" element={<Courses />} />
-
             <Route
               path="/dashboard/:role"
               element={
@@ -58,7 +57,6 @@ root.render(
                 </SessionProvider>
               }
             />
-
             <Route
               path="/create_edit/:courseId"
               element={
@@ -76,7 +74,6 @@ root.render(
                   <Payment />
                 </ProtectedRoute>
               </SessionProvider>
-              
             }/>
             <Route path="/auth/:mode" element={
               <PublicRoutes>
@@ -96,8 +93,4 @@ root.render(
     </ThemeProvider>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

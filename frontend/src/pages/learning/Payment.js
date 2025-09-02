@@ -8,11 +8,10 @@ export default function Payment(){
     const user = storedUser ? JSON.parse(storedUser) : null;
 
     return (
-        <>
-        Let's consider you paid...
-        {id}
-
+        <div style={{minHeight:"81.7vh", display:"flex",justifyContent:"center", alignItems:"center", flexDirection:"column"}}>
+        Let's consider you paid... for this courseID: {id}
+<br/>
             <Enroll user={user} courseId={id} price={'0.00'} />
-        </>
+        </div>
     )
 }

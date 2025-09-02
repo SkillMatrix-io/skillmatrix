@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children }) => {
 
 export const PublicRoutes = ({ children }) => {
     const user = localStorage.getItem('user')
-    if (!user) {
+    if (!user || user === 'null') {
         return children
     }
 }

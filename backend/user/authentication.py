@@ -8,9 +8,7 @@ User = get_user_model()
 
 class CookieJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
-        print("=== CookieJWTAuthentication.authenticate called ===")
         raw_token = request.COOKIES.get('access')
-        print(f"Raw token from cookies: {raw_token}")
         if raw_token is None:
             print("No access token found in cookies")
             return None
@@ -23,7 +21,7 @@ class CookieJWTAuthentication(JWTAuthentication):
             
             # You can optionally log serialized user for debug, no caching:
             serialized = UserSerializer(user).data
-            print("DB user fetched:", serialized)
+            print("DB user fetched")
 
             return (user, validated_token)
         

@@ -32,6 +32,7 @@ export default function ViewCourse({ course, onClose }) {
             }}
         >
             <div style={{
+                color: "black",
                 background: "white",
                 padding: "2rem",
                 borderRadius: "8px",
@@ -39,12 +40,20 @@ export default function ViewCourse({ course, onClose }) {
                 width: "90%",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
             }}>
+
+                <img src={course.cover_image === "" ? '/potato.jpeg' : decodeURIComponent(course.cover_image)} alt="Course Banner" style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius:"12px"
+
+                }}
+                    loading="lazy" />
                 <h2>{course.title}</h2>
                 <p>{course.description}</p>
-                <p>Price: ₹{course.price}</p>
+                <p>Price: <code style={{fontSize:"1.2rem"}}>₹{course.price}</code></p>
                 <div>Ratings: <StarRating rating={course.ratings || 0} /></div>
 
-                <button onClick={onClose}>Close</button>
+                <button style={{border:"black 1px solid"}} onClick={onClose}>Close</button>
             </div>
         </div>
     );

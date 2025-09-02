@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import ViewCourse from '../../components/ui/ViewCourse';
 import StarRating from "../../components/functional/StarRatings";
+import { showToast } from "../../components/functional/Toast";
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/`;
 
@@ -59,7 +60,7 @@ export default function Courses() {
         c.title.toLowerCase().includes(query.toLowerCase())
     )
     return (
-        <div style={{ maxWidth: "80%", margin: "auto", marginTop: "15px", overflowX: "hidden" }}>
+        <div style={{ maxWidth: "80%", margin: "auto", marginTop: "15px", overflowX: "hidden",minHeight: '80vh' }}>
             <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, marginBottom: "20px", margin: "auto" }}>
                 <input
                     type="search"
@@ -180,7 +181,7 @@ export function Enroll(props) {
                     access_type: 'normal',
                 }, { withCredentials: true }
             )
-            alert(response.data.message)
+            showToast.success(response.data.message + "~ navigating you to the course")
             navigate(`/learning/${courseId}`)
         }
     }

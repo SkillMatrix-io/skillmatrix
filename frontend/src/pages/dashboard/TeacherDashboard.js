@@ -114,7 +114,7 @@ export default function TeacherDashboard() {
     }, [loading]);
 
     return (
-        <div style={{ maxWidth: "80%", margin: "auto", display: "flex", gap: "10px" }}>
+        <div style={{ maxWidth: "80%", margin: "auto", display: "flex", gap: "10px", minHeight:'81.8vh' }}>
             <div className="main-container">
                 <h1>Hi, {storedUser?.username} 👋</h1>
                 <img src={`/avatar/${storedUser?.avatar}.png`} alt={`Avatar ${storedUser?.avatar}`} />

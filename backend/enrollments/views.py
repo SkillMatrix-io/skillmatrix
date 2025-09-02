@@ -21,6 +21,21 @@ class EnrollInCourseView(generics.CreateAPIView):
             {"message": "Enrollment successful", "data": response.data},
             status=status.HTTP_201_CREATED
         )
+    
+class UnenrollFromCourseView(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Enrollment.objects.all()
+
+    def delete(self, request, *args, **kwargs):
+        enrollment_id = kwargs.get("pk")
+        try:
+            enrollment = Enrollment.objects.get(pk=enrollment_id, user=request.user)
+            enrollment.delete()
+            return Response({"message": "Unenrolled successfully"}, status=status.HTTP_200_OK)
+        except Enrollment.DoesNotExist:
+            return Response({"message": "Enrollment not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def learn_course_view(request,course_id):

@@ -36,10 +36,21 @@ class CourseDialogSerializer(serializers.ModelSerializer):
         model = Course
         fields = ["id", "title", "price", "description", "cover_image", "instructor_username"]
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+        
 # Serializers convert Django models ↔ JSON and do field-level validation.
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, required=False)
-    categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
+    categories = CategorySerializer(many=True, read_only=True)  # ✅ nested serializer for outputTrue)
+    category_ids = serializers.PrimaryKeyRelatedField(  # ✅ separate write-only field for input
+        queryset=Category.objects.all(),
+        many=True,
+        write_only=True,
+        source="categories"
+    )
     cover_image = serializers.CharField(write_only=True, required=False, allow_null=True)
 
     class Meta:
@@ -102,10 +113,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
         return super().update(instance,validated_data)
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name']
+
         
 # serializer = CourseSerializer(data=request.data)
 # serializer.is_valid() lets us validate all the fields placed in the course

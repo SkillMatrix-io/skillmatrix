@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './StudentDashboard.css';
+import { showToast } from "../../components/functional/Toast";
 
 const baseUrl = `${process.env.REACT_APP_API_URL}/api/my_enrollments/`;
 
@@ -27,7 +28,7 @@ export default function StudentDashboard() {
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
     return (
-        <div className="student-dashboard" style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
+        <div className="student-dashboard" style={{ display: 'flex', flexDirection: "column", alignItems: "center", minHeight:"80vh" }}>
             <div>
                 <h1 className="dashboard-title">Hi {storedUser?.username}</h1>
                 <img src={`/avatar/${storedUser?.avatar}.png`} alt={`Avatar ${storedUser?.avatar}`} />
@@ -47,26 +48,62 @@ export default function StudentDashboard() {
                             <button className="open-btn" onClick={() => openCourse(en.course)}>
                                 Open
                             </button>
-                            <button onClick={() => HandleDialog({ textName: "unenroll from", title: en.course })} style={{ color: "red", marginLeft: '10px' }}>Unenroll</button>
+                            <UnenrollButton enID={en.id} courseTitle={en.course_title} />
                         </div>
                     </div>
                 ))}
             </div>
-            {/* <HandleDialog textName={'unenroll from'} title={'hehe'} /> */}
         </div>
     );
 }
-function HandleDialog(props) {
+
+function UnenrollButton({ enID, courseTitle }) {
+    const [open, setOpen] = useState(false)
+    const navigate = useNavigate()
+
+
+    const unenrollUrl = `${process.env.REACT_APP_API_URL}/api/`;
+    async function handleUnenroll() {
+        try {
+            const response = await axios.delete(`${unenrollUrl}enrollments/${enID}/`, { withCredentials: true })
+            showToast.success(response.data.message || "Unenrolled successfully")
+            setOpen(false)
+            navigate("/courses") // or wherever you want after unenroll
+        } catch (error) {
+            console.error(error)
+            showToast.error(error.response?.data?.message || "Failed to unenroll")
+        }
+    }
+
     return (
-        <div className="areYouSure">
-            <h3>Do you want to {props.name} this course?</h3>
-            <h2>{props.title}</h2>
-            <div style={{display:'flex', justifyItems:"flex-end"}}>
-                <button style={{backgroundColor:'var(--bg)', color:"var(--color)", border:"1px solid var(--color)"}}>No</button>
-                <button style={{marginLeft:'10px'}}>
-                    Delete
-                </button>
-            </div>
-        </div>
+        <>
+            <button
+                onClick={() => setOpen(true)}
+                style={{ color: "red", marginLeft: "10px" }}
+            >
+                Unenroll
+            </button>
+
+            {open && (
+                <div className="areYouSure">
+                    <h3>Do you want to unenroll from this course?</h3>
+                    <h2>{courseTitle}</h2>
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <button
+                            onClick={() => setOpen(false)}
+                            style={{ backgroundColor: "var(--bg)", color: "var(--color)", border: "1px solid var(--color)" }}
+                        >
+                            No
+                        </button>
+                        <button
+                            onClick={handleUnenroll}
+                            style={{ marginLeft: "10px", backgroundColor: "red", color: "white" }}
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            )}
+        </>
     )
 }
