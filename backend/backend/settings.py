@@ -94,15 +94,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     # change local to default to switch between local / cloud db lol
+    # 'defalocault': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': config('DB_NAME'),
+    #     'USER': config('DB_USER'),
+    #     'PASSWORD': config('DB_PASSWORD'),
+    #     'HOST': config('DB_HOST', default='localhost'),
+    #     'PORT': config('DB_PORT', default='3306'),
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='3306'),
-    },
-    'cloud': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('MYSQL_ADDON_DB'),
         'USER': config('MYSQL_ADDON_USER'),

@@ -27,8 +27,11 @@ export default function StudentDashboard() {
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
     return (
-        <div className="student-dashboard">
-            <h1 className="dashboard-title">Hi {storedUser?.username}</h1>
+        <div className="student-dashboard" style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
+            <div>
+                <h1 className="dashboard-title">Hi {storedUser?.username}</h1>
+                <img src={`/avatar/${storedUser?.avatar}.png`} alt={`Avatar ${storedUser?.avatar}`} />
+            </div>
             <div className="enrollment-grid">
                 {enrollments?.map((en) => (
                     <div className="enrollment-card" key={en.id}>
@@ -40,12 +43,30 @@ export default function StudentDashboard() {
                             ></div>
                         </div>
                         <div className="progress-text">{en.progress_percent}% Completed</div>
-                        <button className="open-btn" onClick={() => openCourse(en.course)}>
-                            Open
-                        </button>
+                        <div>
+                            <button className="open-btn" onClick={() => openCourse(en.course)}>
+                                Open
+                            </button>
+                            <button onClick={() => HandleDialog({ textName: "unenroll from", title: en.course })} style={{ color: "red", marginLeft: '10px' }}>Unenroll</button>
+                        </div>
                     </div>
                 ))}
             </div>
+            {/* <HandleDialog textName={'unenroll from'} title={'hehe'} /> */}
         </div>
     );
+}
+function HandleDialog(props) {
+    return (
+        <div className="areYouSure">
+            <h3>Do you want to {props.name} this course?</h3>
+            <h2>{props.title}</h2>
+            <div style={{display:'flex', justifyItems:"flex-end"}}>
+                <button style={{backgroundColor:'var(--bg)', color:"var(--color)", border:"1px solid var(--color)"}}>No</button>
+                <button style={{marginLeft:'10px'}}>
+                    Delete
+                </button>
+            </div>
+        </div>
+    )
 }

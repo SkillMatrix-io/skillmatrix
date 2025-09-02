@@ -11,17 +11,20 @@ import Courses from './pages/courses/Courses';
 import LearnCourse from './pages/learning/LearnCourse';
 import About from './pages/About';
 import Devs from './pages/Devs';
+import Page404 from './pages/404';
+import ProfileView from './pages/misc/ProfileView';
+import Payment from './pages/learning/Payment';
 
-import ProtectedRoute, { PublicRoutes } from './components/functional/ProtectedRoutes';
+
 import ToastProvider from './components/functional/Toast';
 import Navbar from './components/ui/Navbar';
 import Footer from './components/ui/Footer';
-
+import ProtectedRoute, { PublicRoutes } from './components/functional/ProtectedRoutes';
 import reportWebVitals from './reportWebVitals';
 import ThemeProvider from './context/ThemeProvider';
 import SessionProvider from './context/SessionContext';
-import Page404 from './pages/404';
-import ProfileView from './pages/misc/ProfileView';
+
+localStorage.setItem('theme','dark')
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -66,6 +69,15 @@ root.render(
                 </SessionProvider>
               }
             />
+            <Route path='/payment/:id'
+            element={
+              <SessionProvider>
+                <ProtectedRoute>
+                  <Payment />
+                </ProtectedRoute>
+              </SessionProvider>
+              
+            }/>
             <Route path="/auth/:mode" element={
               <PublicRoutes>
                 <Auth />

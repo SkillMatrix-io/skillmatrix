@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import StarRating from "../../components/functional/StarRatings";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm"; // for tables, strikethrough, etc.
 
 export default function LearnCourse() {
     const { id } = useParams();
@@ -57,13 +59,17 @@ export default function LearnCourse() {
         return (
             <div>
                 <h2>{lesson.title}</h2>
-                <p>{lesson.text_content}</p>
+                <div className="prose max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {lesson.text_content}
+                    </ReactMarkdown>
+                </div>
                 {lesson.content_type === "pdf" && (
                     <iframe
-                    src={lesson.content_url}
-                    width="100%"
-                    height="600px"
-                    title={lesson.title}
+                        src={lesson.content_url}
+                        width="100%"
+                        height="600px"
+                        title={lesson.title}
                     ></iframe>
                 )}
                 {lesson.content_type === "video" && (
@@ -77,39 +83,46 @@ export default function LearnCourse() {
     }
     return (
         <>
-    <div style={{display:"flex", height:"100vh"}}>
-        {/* main content */}
-        <div style={{flex:3,padding:"1rem",overflowY:"auto"}}>
-            {renderContent()}
-        </div>
+            <div style={{ display: "flex", height: "100vh" }}>
+                {/* main content */}
+                <div style={{ flex: 3, padding: "1rem", overflowY: "auto" }}>
+                    {renderContent()}
+                </div>
 
-        {/* Sidebar */}
-        <div style={{
-            flex: 1,
-            borderLeft: "1px solid var(--color)",
-            padding: "1rem",
-            overflowY:"auto"
-        }}>
-            <h3>Lessons</h3>
-            <button onClick={()=>setCurrentPage("overview")}
-            style={{display:"block",marginBottom:"10px"}}>
-                Course Overview
-            </button>
-            {lessons.map(lesson => (
-                <button key={lesson.id}
-                onClick={()=>setCurrentPage(lesson.id)}
-                style={{display:"block",
-                    marginBottom: "10px",
-                    backgroundColor: currentPage === lesson.id ? "#eee" : "transparent"
-                }} >
-                    {lesson.title}
-                </button>
-            ))}
-            <button onClick={()=>setCurrentPage("feedback")}
-            style={{display:"block",marginTop:"20px",color:"red"}}
-            >Give Feedback</button>
-        </div>
-    </div>
+                {/* Sidebar */}
+                <div style={{
+                    flex: 1,
+                    borderLeft: "1px solid var(--color)",
+                    padding: "1rem",
+                    overflowY: "auto"
+                }}>
+                    <h3>Lessons</h3>
+                    <button onClick={() => setCurrentPage("overview")}
+                        style={{
+                            display: "block", marginBottom: "10px",
+                            minWidth: "69%",
+                        }}>
+                        Course Overview
+                    </button>
+                    {lessons.map(lesson => (
+                        <button key={lesson.id}
+                            onClick={() => setCurrentPage(lesson.id)}
+                            style={{
+                                display: "block",
+                                marginBottom: "10px",
+                                color: "var(--color)",
+                                minWidth: "69%",
+                                border: "1px solid var(--color)",
+                                backgroundColor: currentPage === lesson.id ? "var(--bg)" : "transparent"
+                            }} >
+                            {lesson.title}
+                        </button>
+                    ))}
+                    <button onClick={() => setCurrentPage("feedback")}
+                        style={{ display: "block", marginTop: "20px", color: "red", minWidth: "69%" }}
+                    >Give Feedback</button>
+                </div>
+            </div>
         </>
     );
 }

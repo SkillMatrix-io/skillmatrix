@@ -83,8 +83,8 @@ export default function Courses() {
                 gridTemplateColumns: "repeat(auto-fill, minmax(700px, 1fr))",
                 gap: "20px",
                 width: "100%",
-                height:"100%",
-                marginTop:"20px",
+                height: "100%",
+                marginTop: "20px",
             }}>
                 {filteredCourses.map((course) => {
                     const isEnrolled = enrollments?.some(
@@ -98,7 +98,10 @@ export default function Courses() {
                                     <h6><i>{course.instructor_username}</i></h6>
                                 </a>
                                 <p style={{ margin: "8px 0", color: "#555" }}>{course.description.slice(0, 100)}</p>
-                                <em>{course.price === '0.00' ? "Free" : `₹${course.price}`}</em>
+                                {!isEnrolled &&
+
+                                    <em>{course.price === '0.00' ? "Free" : `₹${course.price}`}</em>
+                                }
                                 <StarRating rating={course.rating} />
                                 {user?.role !== "teacher" && (
                                     isEnrolled ? (
@@ -106,10 +109,10 @@ export default function Courses() {
                                             Open
                                         </button>
                                     ) : (
-                                        <Enroll user={user} courseId={course.id} />
+                                        <Enroll user={user} courseId={course.id} price={course.price} />
                                     )
                                 )}
-                                <button onClick={() => handleView(course.id)}>View</button>
+                                <button style={{marginLeft:"10px"}} onClick={() => handleView(course.id)}>View</button>
                             </div>
                             <div style={{
                                 flex: "0 0 40%",
@@ -117,7 +120,7 @@ export default function Courses() {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                color:"var(--bg)"
+                                color: "var(--bg)"
                             }}
                             >
                                 <img
@@ -126,9 +129,9 @@ export default function Courses() {
                                     style={{
                                         width: "105%",
                                         height: "110%",
-                                        right:"-10px",
+                                        right: "-10px",
                                         objectFit: "cover",
-                                        position:"relative",
+                                        position: "relative",
 
                                     }}
                                     loading="lazy"
@@ -153,10 +156,24 @@ export default function Courses() {
 
 export function Enroll(props) {
     const navigate = useNavigate()
+
+    const storedUser = localStorage.getItem('user');
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    
     async function handleEnroll(courseId) {
         if (!props.user) {
             navigate('/auth/register')
-        } else {
+        } 
+        else if (props.price !== '0.00'){
+            // if user is premimum skip this condition....
+            // or for better security let the other page handle it... where the server directly checks if the user is premium or not and well does the rest
+            if (!user || user.role !== 'student'){
+                navigate('/auth/login')
+            } else {
+                navigate(`/payment/${courseId}`)
+            }
+        }
+        else {
             const response = await axios.post(`${baseUrl}enrollments/`,
                 {
                     course: courseId,

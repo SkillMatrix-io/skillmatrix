@@ -12,7 +12,11 @@
 .enrollment-grid {
   display: flex;
   flex-wrap: wrap;
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
   gap: 20px;
+  justify-content: space-evenly;
 }
 
 .enrollment-card {
@@ -24,6 +28,7 @@
   border-radius: 10px;
   min-width: 230px;
   max-width: 320px;
+  width: 280px;
   transition: box-shadow 0.2s, border-color 0.2s;
   display: flex;
   flex-direction: column;
@@ -91,4 +96,17 @@
   .enrollment-card {
     max-width: 100%;
   }
+}
+.areYouSure {
+  background-color: var(--bg);
+  color: var(--color);
+  z-index: 9999;
+  width: 75%;
+  height: 25%;
+  position: fixed;
+  border-radius: 12px;
+  box-shadow: 2px 2px 3px var(--text);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
 }

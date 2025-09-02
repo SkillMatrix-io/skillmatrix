@@ -1,7 +1,7 @@
 # courses/serializers.py
 from rest_framework import serializers #type: ignore
 from .models import Course, Lesson, Category
-from .utils.supabase import upload_lesson_file, upload_cover_image
+from .utils.supabase import upload_lesson_file
 
 class LessonSerializer(serializers.ModelSerializer):
     content_file = serializers.FileField(write_only=True, required=False, allow_null=True)
