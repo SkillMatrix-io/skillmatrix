@@ -30,9 +30,9 @@ def register_view(request):
             'avatar':user.avatar,
         }, status=status.HTTP_201_CREATED)
         
-        response.set_cookie('access',str(refresh.access_token), httponly=True, samesite='Lax',max_age=60*60*24) #important - storing login token in http only cookies - not on local machine
+        response.set_cookie('access',str(refresh.access_token), httponly=True,max_age=60*60*24, secure=True, samesite="None") #important - storing login token in http only cookies - not on local machine
 
-        response.set_cookie('refresh',str(refresh),httponly=True, max_age=60*60*24*30)
+        response.set_cookie('refresh',str(refresh),httponly=True, max_age=60*60*24*30, secure=True, samesite="None")
         print(str(refresh.access_token))
 
         return response
@@ -65,17 +65,10 @@ def login_view(request):
             'avatar':user.avatar,
         }, status=status.HTTP_200_OK)
 
-        response.set_cookie('access', 
-                            str(refresh.access_token), 
-                            httponly=True, 
-                            samesite='Lax',
-                            max_age=60*60*24) #24 hours
-        # secure=True, 
-        # only for production.. enables https instead http communication
-        response.set_cookie('refresh', 
-                            str(refresh), 
-                            httponly=True,
-                            max_age=60*60*24*30) #30 days
+        
+        response.set_cookie('access',str(refresh.access_token), httponly=True,max_age=60*60*24, secure=True, samesite="None") #important - storing login token in http only cookies - not on local machine
+
+        response.set_cookie('refresh',str(refresh),httponly=True, max_age=60*60*24*30, secure=True, samesite="None")
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

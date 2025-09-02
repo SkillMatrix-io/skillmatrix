@@ -32,8 +32,11 @@ export default function Courses() {
         } else {
             (async function getEnrollments() {
                 try {
-                    const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true })
-                    setEnrollments(res.data)
+
+                    if (user?.role === "student" || user?.role === "Student") {
+                        const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true })
+                        setEnrollments(res.data)
+                    }
                 }
                 catch (e) {
                     console.log("can't fetch enroolements", e.data)
@@ -60,7 +63,7 @@ export default function Courses() {
         c.title.toLowerCase().includes(query.toLowerCase())
     )
     return (
-        <div style={{ maxWidth: "80%", margin: "auto", marginTop: "15px", overflowX: "hidden",minHeight: '80vh' }}>
+        <div style={{ maxWidth: "80%", margin: "auto", marginTop: "15px", overflowX: "hidden", minHeight: '80vh' }}>
             <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, marginBottom: "20px", margin: "auto" }}>
                 <input
                     type="search"
@@ -113,7 +116,7 @@ export default function Courses() {
                                         <Enroll user={user} courseId={course.id} price={course.price} />
                                     )
                                 )}
-                                <button style={{marginLeft:"10px"}} onClick={() => handleView(course.id)}>View</button>
+                                <button style={{ marginLeft: "10px" }} onClick={() => handleView(course.id)}>View</button>
                             </div>
                             <div style={{
                                 flex: "0 0 40%",
@@ -160,15 +163,15 @@ export function Enroll(props) {
 
     const storedUser = localStorage.getItem('user');
     const user = storedUser ? JSON.parse(storedUser) : null;
-    
+
     async function handleEnroll(courseId) {
         if (!props.user) {
             navigate('/auth/register')
-        } 
-        else if (props.price !== '0.00'){
+        }
+        else if (props.price !== '0.00') {
             // if user is premimum skip this condition....
             // or for better security let the other page handle it... where the server directly checks if the user is premium or not and well does the rest
-            if (!user || user.role !== 'student'){
+            if (!user || user.role !== 'student') {
                 navigate('/auth/login')
             } else {
                 navigate(`/payment/${courseId}`)
