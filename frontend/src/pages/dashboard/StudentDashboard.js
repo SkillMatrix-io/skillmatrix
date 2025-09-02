@@ -13,6 +13,7 @@ export default function StudentDashboard() {
     useEffect(() => {
         (async function getEnrollments() {
             try {
+                console.log("that is issue")
                 const res = await axios.get(baseUrl, { withCredentials: true });
                 setEnrollments(res.data);
             }

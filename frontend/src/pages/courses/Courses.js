@@ -33,6 +33,7 @@ export default function Courses() {
         if (role === "teacher") return;
 
         if (role === "student") {
+            console.log("this is issue")
             (async () => {
                 try {
                     const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true });
