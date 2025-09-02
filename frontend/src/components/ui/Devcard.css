@@ -1,0 +1,13 @@
+.card-footer a i {
+  font-size: 1.5rem;   /* consistent size */
+  line-height: 1;      /* no extra spacing */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-footer a i:hover {
+  transform: translateY(-3px);
+  transition: 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.25);
+}
