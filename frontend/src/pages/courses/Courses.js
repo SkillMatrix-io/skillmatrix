@@ -27,23 +27,22 @@ export default function Courses() {
     }, []);
 
     useEffect(() => {
-        if (user?.role === "Teacher" || user?.role === "teacher") {
-            return
-        } else {
-            (async function getEnrollments() {
-                try {
+        if (!user) return;
 
-                    if (user?.role === "student" || user?.role === "Student") {
-                        const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true })
-                        setEnrollments(res.data)
-                    }
+        const role = user.role?.toLowerCase();
+        if (role === "teacher") return;
+
+        if (role === "student") {
+            (async () => {
+                try {
+                    const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true });
+                    setEnrollments(res.data);
+                } catch (e) {
+                    console.error("can't fetch enrollments", e.response?.data || e.message);
                 }
-                catch (e) {
-                    console.log("can't fetch enroolements", e.data)
-                }
-            })()
+            })();
         }
-    },)
+    }, [user]);
 
     async function handleView(courseId) {
         try {
