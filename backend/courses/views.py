@@ -19,13 +19,14 @@ class CategoryListAPIView(ListAPIView):
 def course_list_view(request):
     # courses = Course.objects.filter(is_published=True) #query to filter courses
     courses = (
-    Course.objects.filter(is_published=True).select_related("instructor")  # join user table
+    Course.objects.filter(is_published=True).select_related("instructor").prefetch_related("categories")  # join user table
     .only(
         "id",
         "title",
         "price",
         "description",
         "cover_image",
+        "rating",
         "instructor__username", #from meta
     ))
     serializer = CourseCardSerializer(courses, many=True) #running the query to db thru serializer 
@@ -36,7 +37,7 @@ def course_list_view(request):
 @permission_classes([AllowAny])
 def course_detail_view(request, course_id):
     course = get_object_or_404(
-        Course.objects.select_related("instructor"),
+        Course.objects.select_related("instructor").prefetch_related("categories"),
         pk=course_id,
         is_published=True
     )
@@ -50,8 +51,8 @@ def instructor_course_list_view(request):
     courses = (
         Course.objects
         .filter(instructor=request.user)
-        .select_related("instructor")
-        .only("id", "title", "price", "description", "instructor__username","is_published","cover_image")
+        # .select_related("instructor")
+        .only("id", "title","is_published")
     )
     serializer = CourseCardSerializer(courses, many=True)
     return Response(serializer.data)

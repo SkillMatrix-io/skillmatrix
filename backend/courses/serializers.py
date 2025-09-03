@@ -3,6 +3,13 @@ from rest_framework import serializers #type: ignore
 from .models import Course, Lesson, Category
 from .utils.supabase import upload_lesson_file
 
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
 class LessonSerializer(serializers.ModelSerializer):
     content_file = serializers.FileField(write_only=True, required=False, allow_null=True)
     file_url = serializers.CharField(write_only=True, required=False, allow_null=True, allow_blank=True)
@@ -24,32 +31,29 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class CourseCardSerializer(serializers.ModelSerializer):
     instructor_username = serializers.CharField(source="instructor.username", read_only=True)
+    categories = CategorySerializer(many=True, read_only=True) 
 
     class Meta:
         model = Course
-        fields = ["id", "title", "price", "description", "cover_image", "instructor_username","is_published"]
+        fields = ["id", "title", "price", "description", "cover_image","rating","instructor_username","is_published","categories"]
 
 class CourseDialogSerializer(serializers.ModelSerializer):
     instructor_username = serializers.CharField(source="instructor.username", read_only=True)
+    categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
-        fields = ["id", "title", "price", "description", "cover_image", "instructor_username"]
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name']
+        fields = ["id", "title", "price", "description", "cover_image", "rating","instructor_username","categories",]
         
 # Serializers convert Django models ↔ JSON and do field-level validation.
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, required=False)
     categories = CategorySerializer(many=True, read_only=True)  # ✅ nested serializer for outputTrue)
-    category_ids = serializers.PrimaryKeyRelatedField(  # ✅ separate write-only field for input
+    categories = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(),
         many=True,
         write_only=True,
-        source="categories"
+        # source="categories"
     )
     cover_image = serializers.CharField(write_only=True, required=False, allow_null=True)
 

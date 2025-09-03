@@ -51,8 +51,15 @@ export default function ViewCourse({ course, onClose }) {
                 <h2>{course.title}</h2>
                 <p>{course.description}</p>
                 <p>Price: <code style={{fontSize:"1.2rem"}}>₹{course.price}</code></p>
-                <div>Ratings: <StarRating rating={course.ratings || 0} /></div>
-
+                <div style={{marginBottom:"3px"}}>Ratings: <StarRating rating={course.ratings || 0} /></div>
+                Categories: 
+                <div style={{ display: "flex", gap: "5px",marginBottom:"3px" }}>
+                    {course?.categories.map((e) => (
+                        <span key={e.id} style={{ fontSize: "0.8rem", border: "0.1px solid var(--bg)", padding: "3px", borderRadius: "2px" }}>
+                            {e.name}
+                        </span>
+                    ))}
+                </div>
                 <button style={{border:"black 1px solid"}} onClick={onClose}>Close</button>
             </div>
         </div>

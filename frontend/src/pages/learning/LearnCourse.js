@@ -1,13 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import StarRating from "../../components/functional/StarRatings";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm"; // for tables, strikethrough, etc.
+import { showToast } from "../../components/functional/Toast";
 
 export default function LearnCourse() {
     const { id } = useParams();
     const [courseData, setCourseData] = useState(null);
+    const [rating,setRating] = useState(0)
+    const [review,setReview]= useState(null)
     const baseUrl = `${process.env.REACT_APP_API_URL}/api/learn_course/${id}`;
     const navigate = useNavigate()
 
@@ -29,6 +32,20 @@ export default function LearnCourse() {
 
     const lessons = courseData.lessons || [];
 
+
+    const handleSubmit = async () => {
+        try {
+            const res  = await axios.post(`${process.env.REACT_APP_API_URL}/api/feedback/${id}/`, {
+                rating,
+                review,
+            }, { withCredentials: true });
+            showToast.success(res.data.message)
+            navigate('/'); // or show success toast
+        } catch (err) {
+            console.error("Feedback error:", err);
+        }
+    };
+
     const renderContent = () => {
         if (currentPage === "overview") {
             return (
@@ -47,9 +64,20 @@ export default function LearnCourse() {
                 <div>
                     <h2>Course Feedback</h2>
                     <p>Rate this course:</p>
-                    <input type="number" min={1} max={5} placeholder="1-5" />
-                    <textarea placeholder="Your feedback here"></textarea>
-                    <button onClick={() => navigate('/')}>Submit & Go</button>
+                    <input
+                        type="number"
+                        min={1}
+                        max={5}
+                        value={rating}
+                        onChange={e => setRating(e.target.value)}
+                        placeholder="1-5"
+                    />
+                    <textarea
+                        value={review}
+                        onChange={e => setReview(e.target.value)}
+                        placeholder="Your feedback here"
+                    />
+                    <button onClick={handleSubmit}>Submit & Go</button>
                 </div>
             );
         }
@@ -118,9 +146,11 @@ export default function LearnCourse() {
                             {lesson.title}
                         </button>
                     ))}
+                    {courseData.rating === -1 ? 
                     <button onClick={() => setCurrentPage("feedback")}
                         style={{ display: "block", marginTop: "20px", color: "red", minWidth: "69%" }}
-                    >Give Feedback</button>
+                    >Give Feedback</button> :<button style={{ display: "block", marginTop: "20px", color: "red", minWidth: "69%" }} onClick={()=>navigate('/')}>Go Home</button>
+                    }
                 </div>
             </div>
         </>

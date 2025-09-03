@@ -145,14 +145,14 @@ export default function CreateEditCourse() {
         formData.append("price", Number(courseData.price));
         formData.append("is_published", courseData.is_published);
 
-        // categries
+        // categories
         (courseData.categories || []).forEach((catId) => {
-            formData.append('categories', catId);
+            formData.append('category_ids',catId)
+            formData.append('categories',catId);
         });
-
         // Object.entries(courseData).forEach(([key, value]) => {
         //     if (key === 'categories') {
-        //         value.forEach((catId) => formData.append('categories', catId));
+        //         value.forEach((catId) => formData.append('category_ids', catId));
         //     } else if (value !== null) {
         //         formData.append(key, value);
         //     }

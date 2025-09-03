@@ -14,7 +14,7 @@ from .models import Course
 from user.authentication import CookieJWTAuthentication
 from rest_framework.parsers import MultiPartParser, FormParser #type: ignore
 # as serializer needs parsed input just parsing the lessons here.
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound #type: ignore
 from .utils.supabase import upload_cover_image
 
 import json

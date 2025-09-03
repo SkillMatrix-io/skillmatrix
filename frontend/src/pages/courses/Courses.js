@@ -14,10 +14,16 @@ export default function Courses() {
 
 
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [enrollments, setEnrollments] = useState(null)
 
-    const storedUser = localStorage.getItem('user');
-    const user = storedUser ? JSON.parse(storedUser) : null;
+    // const storedUser = localStorage.getItem('user');
+    // const user = storedUser ? JSON.parse(storedUser) : null;
+    const [user, setUser] = useState(() => {
+        const storedUser = localStorage.getItem('user');
+        return storedUser ? JSON.parse(storedUser) : null;
+    });
+
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -33,7 +39,6 @@ export default function Courses() {
         if (role === "teacher") return;
 
         if (role === "student") {
-            console.log("this is issue")
             (async () => {
                 try {
                     const res = await axios.get(`${baseUrl}my_enrollments/`, { withCredentials: true });
@@ -58,10 +63,28 @@ export default function Courses() {
         setSelectedCourse(null);
     }
 
+    const [categories] = useState([
+        { "id": 3, "name": "Artificial Intelligence" },
+        { "id": 8, "name": "Blockchain" },
+        { "id": 6, "name": "Cloud Computing" },
+        { "id": 7, "name": "Cybersecurity" },
+        { "id": 2, "name": "Data Science" },
+        { "id": 10, "name": "Game Development" },
+        { "id": 4, "name": "Machine Learning" },
+        { "id": 5, "name": "Mobile App Development" },
+        { "id": 9, "name": "UI/UX Design" },
+        { "id": 1, "name": "Web Development" }
+    ]);
 
-    const filteredCourses = courses.filter(c =>
-        c.title.toLowerCase().includes(query.toLowerCase())
-    )
+    const filteredCourses = courses.filter(c => {
+        const matchesQuery = c.title.toLowerCase().includes(query.toLowerCase());
+
+        const matchesCategory =
+            selectedCategories.length === 0 ||
+            c.categories.some(cat => selectedCategories.includes(String(cat.id)));
+
+        return matchesQuery && matchesCategory;
+    });
     return (
         <div style={{ maxWidth: "80%", margin: "auto", marginTop: "15px", overflowX: "hidden", minHeight: '80vh' }}>
             <form role="search" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'center', width: '100%', maxWidth: '500px', padding: 0, marginBottom: "20px", margin: "auto" }}>
@@ -81,6 +104,37 @@ export default function Courses() {
                     Search
                 </button>
             </form>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px' }}>
+                {categories.map(cat => (
+                    <label
+                        key={cat.id}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            border: '1px solid #ccc',
+                            borderRadius: '6px',
+                            padding: '4px 8px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <input
+                            type="checkbox"
+                            value={cat.id}
+                            checked={selectedCategories.includes(String(cat.id))}
+                            onChange={e => {
+                                if (e.target.checked) {
+                                    setSelectedCategories(prev => [...prev, String(cat.id)]);
+                                } else {
+                                    setSelectedCategories(prev => prev.filter(id => id !== String(cat.id)));
+                                }
+                            }}
+                        />
+                        {cat.name}
+                    </label>
+                ))}
+            </div>
 
             <div style={{
                 display: "grid",

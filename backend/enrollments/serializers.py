@@ -15,3 +15,8 @@ class EnrollmentDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id','course','course_title','access_type','status','progress_percent','rating','review'
         ]
+
+class EnrollmentFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Enrollment
+        fields = ['rating','review']

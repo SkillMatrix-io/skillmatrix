@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Enrollment, LessonProgress
 from courses.models import Lesson
-from .serializers import EnrollmentCreateSerializer, EnrollmentDetailSerializer
+from .serializers import EnrollmentCreateSerializer, EnrollmentDetailSerializer, EnrollmentFeedbackSerializer
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
 
@@ -71,9 +71,11 @@ def learn_course_view(request,course_id):
         "course":{
             "id":enrollment.course.id,
             "title":enrollment.course.title,
-            "description":enrollment.course.description
+            "description":enrollment.course.description,
+            "rating":enrollment.course.rating,
         },
-        "lessons": lesson_data
+        "lessons": lesson_data,
+        "rating":enrollment.rating or -1,
     })
 
 @api_view(['GET'])
@@ -88,3 +90,27 @@ def enrollment_list_view(request):
     serializer = EnrollmentDetailSerializer(enrollments,many=True)
     print(serializer.data)
     return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def submit_feedback_view(request, course_id):
+    enrollment = get_object_or_404(
+        Enrollment,
+        course_id=course_id,
+        user=request.user
+    )
+
+    serializer = EnrollmentFeedbackSerializer(enrollment, data=request.data,partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    course = enrollment.course
+    ratings = Enrollment.objects.filter(course=course, rating__isnull=False).values_list("rating",flat=True)
+
+    if ratings:
+        course.rating = sum(ratings) / len(ratings)
+        course.save(update_fields=["rating"])
+
+        return Response({"message": "Feedback submitted successfully!"}, status=200)
+    return Response(serializer.errors, status=400)
