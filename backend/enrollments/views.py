@@ -1,11 +1,11 @@
-from rest_framework import generics, permissions, status
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import generics, status #type: ignore
+from rest_framework.response import Response #type: ignore
+from rest_framework.permissions import IsAuthenticated #type: ignore
 from .models import Enrollment, LessonProgress
 from courses.models import Lesson
 from .serializers import EnrollmentCreateSerializer, EnrollmentDetailSerializer, EnrollmentFeedbackSerializer
-from rest_framework.decorators import api_view, permission_classes
-from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view, permission_classes #type: ignore
+from django.shortcuts import get_object_or_404 #type: ignore
 
 class EnrollInCourseView(generics.CreateAPIView):
     # compared to APIview it gives more boilerpalte - - not having to define stuff like get post methods

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import StarRating from "../../components/functional/StarRatings";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm"; // for tables, strikethrough, etc.

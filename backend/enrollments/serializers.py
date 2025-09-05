@@ -1,6 +1,6 @@
 # enrollments/serializers.py
-from rest_framework import serializers
-from .models import Enrollment, LessonProgress
+from rest_framework import serializers #type: ignore
+from .models import Enrollment
 
 class EnrollmentCreateSerializer(serializers.ModelSerializer):
     class Meta:

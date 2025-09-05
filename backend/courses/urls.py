@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path #type: ignore
 from . import views
 from .views import CategoryListAPIView
 from courses.api_views import CourseCreateAPIView, CourseUpdateAPIView

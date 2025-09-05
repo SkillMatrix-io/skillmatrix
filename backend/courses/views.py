@@ -1,10 +1,10 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.shortcuts import get_object_or_404 #type: ignore
+from rest_framework.decorators import api_view, permission_classes #type: ignore
+from rest_framework.permissions import AllowAny, IsAuthenticated #type: ignore
 from user.authentication import CookieJWTAuthentication
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView #type: ignore
 from .models import Course, Category
-from rest_framework.response import Response
+from rest_framework.response import Response #type: ignore
 from .serializers import CategorySerializer,CourseCardSerializer, CourseDialogSerializer
 from pprint import pprint
 
