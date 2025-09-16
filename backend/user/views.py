@@ -144,7 +144,7 @@ def session_view(request):
             new_access.set_exp(lifetime=datetime.timedelta(hours=24))  # Optional: force your own expiry
             # fetched user data - hehe
             response = Response(UserSerializer(user).data, status=status.HTTP_200_OK)
-            response.set_cookie('access', str(new_access), httponly=True, samesite='None', max_age=60*60*24)
+            response.set_cookie('access', str(new_access), httponly=True,secure=True, samesite='None', max_age=60*60*24)
             return response
 
         except TokenError:
