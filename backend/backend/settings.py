@@ -61,7 +61,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com","http://192.168.173.176:3000"
+    "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com","http://192.168.173.176:3000","https://skillmatrix-beta.vercel.app/"
 ]
 CSRF_ALLOWED_ORIGINS = [
     "http://localhost:3000", 'https://skillmatrix-beta.vercel.app', "https://skillmatrix-rlxj.onrender.com"

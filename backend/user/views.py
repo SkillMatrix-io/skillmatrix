@@ -80,8 +80,16 @@ def login_view(request):
 @permission_classes([IsAuthenticated])
 def logout_view(request):
     response = Response({'message':'Logged out successfully'},status=status.HTTP_200_OK)
-    response.delete_cookie('access')
-    response.delete_cookie('refresh')
+    response.delete_cookie(
+    key='access',
+    samesite='None',
+    secure=True
+    )
+    response.delete_cookie(
+    key='refresh',
+    samesite='None',
+    secure=True
+    )
     return response
 
 @api_view(['GET'])
