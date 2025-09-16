@@ -82,13 +82,11 @@ def logout_view(request):
     response = Response({'message':'Logged out successfully'},status=status.HTTP_200_OK)
     response.delete_cookie(
     key='access',
-    samesite='None',
-    secure=True
+    samesite='None'
     )
     response.delete_cookie(
     key='refresh',
-    samesite='None',
-    secure=True
+    samesite='None'
     )
     return response
 
