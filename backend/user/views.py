@@ -31,7 +31,7 @@ def register_view(request):
         }, status=status.HTTP_201_CREATED)
         
         response.set_cookie('access',str(refresh.access_token), httponly=True,max_age=60*60*24, secure=True, samesite="None") #important - storing login token in http only cookies - not on local machine
-
+        
         response.set_cookie('refresh',str(refresh),httponly=True, max_age=60*60*24*30, secure=True, samesite="None")
         print(str(refresh.access_token))
 
@@ -144,7 +144,7 @@ def session_view(request):
             new_access.set_exp(lifetime=datetime.timedelta(hours=24))  # Optional: force your own expiry
             # fetched user data - hehe
             response = Response(UserSerializer(user).data, status=status.HTTP_200_OK)
-            response.set_cookie('access', str(new_access), httponly=True, samesite='Lax', max_age=60*60*24)
+            response.set_cookie('access', str(new_access), httponly=True, samesite='None', max_age=60*60*24)
             return response
 
         except TokenError:
