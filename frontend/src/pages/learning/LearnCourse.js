@@ -61,7 +61,13 @@ export default function LearnCourse() {
         }
         if (currentPage === "feedback") {
             return (
-                <div>
+                <div style={{
+                    marginLeft:"auto",
+                    marginRight:"auto",
+                    width:"50%",
+                    justifyContent:"center",
+                    alignItems:"center"
+                }}>
                     <h2>Course Feedback</h2>
                     <p>Rate this course:</p>
                     <input
@@ -74,8 +80,13 @@ export default function LearnCourse() {
                     />
                     <textarea
                         value={review}
+                        style={{
+                            width:"100px",
+                            height:"200px"
+                        }}
                         onChange={e => setReview(e.target.value)}
-                        placeholder="Your feedback here"
+                        placeholder="Your feedback here (required)"
+
                     />
                     <button onClick={handleSubmit}>Submit & Go</button>
                 </div>
