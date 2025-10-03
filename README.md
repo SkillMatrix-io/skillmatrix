@@ -42,6 +42,7 @@ It allows educators to build rich courses with **videos, PDFs, and markdown less
 - ☁️ Render (API Hosting)  
 - ☁️ Clever Cloud (Database Hosting)  
 - ☁️ Vercel (Frontend Hosting)
+<img width="1191" height="645" alt="diagram" src="https://github.com/user-attachments/assets/a205e2b1-fbc9-40ac-abbf-3274df235398" />
 
 ---
 
@@ -86,3 +87,4 @@ skillmatrix/
 SkillMatrix is more than just a course website — it's a foundation for a collaborative learning ecosystem. Whether you're an educator looking to share knowledge or a student eager to learn, SkillMatrix is built to grow with you.
 
 ---
+
